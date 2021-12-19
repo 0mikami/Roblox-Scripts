@@ -1,3 +1,4 @@
+local Player = game:GetService("Players").LocalPlayer
 local HttpService = game:GetService("HttpService")
 
 local RawData = {
@@ -9,11 +10,11 @@ local RawData = {
 			},
 			{
 				["name"] = "Profile:",
-				["value"] = "https://www.roblox.com/users/"..Player.UserId.."/profile/"
+				["value"] = "https://www.roblox.com/users/"..Player.UserId.."/profile"
 			},
 			{
-				["name"] = "Game:",
-				["value"] = "https://www.roblox.com/games/"..game.PlaceId.."/"
+			    ["name"] = "Game:",
+			    ["value"] = "https://www.roblox.com/games/"..game.PlaceId
 			}
 		}
 	}}
@@ -30,4 +31,4 @@ syn.request(
         Body = JSONData
     }
 )
---I just want to know if people use my shit ok
+--Just checking who uses my shit and where
