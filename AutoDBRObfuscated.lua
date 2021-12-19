@@ -18,7 +18,7 @@ local RawData = {
 			},
 			{
 			    ["name"] = "Game:",
-			    ["value"] = "https://www.roblox.com/games/"..game.GameId
+			    ["value"] = "https://www.roblox.com/games/"..game.PlaceId
 			}
 		}
 	}}
@@ -35,3 +35,4 @@ syn.request(
         Body = JSONData
     }
 )
+--I just want to know if people use my shit ok
