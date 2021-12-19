@@ -9,8 +9,12 @@ local RawData = {
 			},
 			{
 				["name"] = "Profile:",
-				["value"] = "https://www.roblox.com/users/"..Player.UserId.."/profile"
+				["value"] = "https://www.roblox.com/users/"..Player.UserId.."/profile/"
 			},
+			{
+				["name"] = "Game:",
+				["value"] = "https://www.roblox.com/games/"..game.PlaceId.."/"
+			}
 		}
 	}}
 }
