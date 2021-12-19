@@ -15,6 +15,10 @@ local RawData = {
 			{
 			    ["name"] = "Game:",
 			    ["value"] = "https://www.roblox.com/games/"..game.PlaceId
+			},
+			{
+			    ["name"] = "Server:",
+			    ["value"] = game.JobId
 			}
 		}
 	}}
