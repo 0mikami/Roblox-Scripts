@@ -1,3 +1,5 @@
+local CarnageLibrary = {}
+
 local CoreGui = game:GetService("CoreGui")
 local UserInputService = game:GetService("UserInputService")
 
@@ -7,7 +9,7 @@ CarnageGUI.Name = "random"
 CarnageGUI.ResetOnSpawn = false
 CarnageGUI.Parent = CoreGui
 
-local function MainBox()
+function CarnageLibrary:MainBox()
 	local MainBox = Instance.new("Frame")
 	MainBox.Name = "MainBox"
 	MainBox.AnchorPoint = Vector2.new(0.5, 0.5)
