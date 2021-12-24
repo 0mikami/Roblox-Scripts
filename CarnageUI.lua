@@ -59,3 +59,5 @@ function CarnageLibrary:MainBox()
 
 	return MainBox
 end
+
+return CarnageLibrary
