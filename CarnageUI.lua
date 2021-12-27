@@ -1,13 +1,18 @@
 local CarnageLibrary = {}
 
+local Players = game:GetService("Players")
 local CoreGui = game:GetService("CoreGui")
 local UserInputService = game:GetService("UserInputService")
+local RunService = game:GetService("RunService")
+
+local LocalPlayer = Players.LocalPlayer
+local PlayerGui = LocalPlayer.PlayerGui
 
 local CarnageGUI = Instance.new("ScreenGui")
 CarnageGUI.IgnoreGuiInset = true
 CarnageGUI.Name = "random"
 CarnageGUI.ResetOnSpawn = false
-CarnageGUI.Parent = CoreGui
+CarnageGUI.Parent = PlayerGui
 
 function CarnageLibrary:MainBox()
 	local MainBox = Instance.new("Frame")
@@ -41,6 +46,7 @@ function CarnageLibrary:MainBox()
 	local TitleText = Instance.new("TextLabel")
 	TitleText.Name = "TitleText"
 	TitleText.AnchorPoint = Vector2.new(0, 0.5)
+	TitleText.AutomaticSize = Enum.AutomaticSize.X
 	TitleText.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 	TitleText.BackgroundTransparency = 1.000
 	TitleText.BorderColor3 = Color3.fromRGB(0, 0, 0)
@@ -92,6 +98,26 @@ function CarnageLibrary:MainBox()
 	NavigationBar.Position = UDim2.new(0.5, 0, 0, 30)
 	NavigationBar.Size = UDim2.new(1, -5, 0, 30)
 	NavigationBar.Parent = MainBox
+	
+	TopBar.InputBegan:Connect(function(Input)
+		if Input.UserInputType == Enum.UserInputType.MouseButton1 then
+			local RelativeXPosition = (Input.Position.X - MainBox.AbsolutePosition.X) / MainBox.Size.X.Offset
+			local RelativeYPosition = (Input.Position.Y - MainBox.AbsolutePosition.Y) / MainBox.Size.Y.Offset
+			
+			MainBox.AnchorPoint = Vector2.new(RelativeXPosition,RelativeYPosition)
+			
+			RunService:BindToRenderStep("MoveGuiToMouse",10,function()
+				local MouseLocation = UserInputService:GetMouseLocation()
+				
+				MainBox.Position = UDim2.fromOffset(MouseLocation.X,MouseLocation.Y)
+			end)
+		end
+	end)
+	TopBar.InputEnded:Connect(function(Input)
+		if Input.UserInputType == Enum.UserInputType.MouseButton1 then
+			RunService:UnbindFromRenderStep("MoveGuiToMouse")
+		end
+	end)
 	
 	return MainBox
 end
