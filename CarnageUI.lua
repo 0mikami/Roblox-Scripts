@@ -57,11 +57,11 @@ function CarnageLibrary:MainBox()
 	TitleText.Parent = TopBar
 	
 	local TitleTextPadding = Instance.new("UIPadding")
-	TitleTextPadding.Parent = TitleText
 	TitleTextPadding.PaddingBottom = UDim.new(0, 5)
 	TitleTextPadding.PaddingLeft = UDim.new(0, 5)
 	TitleTextPadding.PaddingRight = UDim.new(0, 5)
 	TitleTextPadding.PaddingTop = UDim.new(0, 5)
+	TitleTextPadding.Parent = TitleText
 		
 	local OpenButton = Instance.new("TextButton")
 	OpenButton.Name = "OpenButton"
