@@ -164,6 +164,7 @@ function CarnageLibrary:NewPage()
 	
 	local PageButton = Instance.new("TextButton")
 	PageButton.Name = "PageButton"
+	PageButton.Active = false
 	PageButton.AnchorPoint = Vector2.new(0, 0.5)
 	PageButton.AutomaticSize = Enum.AutomaticSize.X
 	PageButton.BackgroundColor3 = Color3.fromRGB(200, 40, 40)
@@ -193,14 +194,16 @@ function CarnageLibrary:NewPage()
 	PageButtonPointer.Value = PageButton
 	PageButtonPointer.Parent = PageFrame
 	
+	local MainBox = CarnageGUI:FindFirstChild("MainBox")
+	local CurrentPage = MainBox:FindFirstChild("CurrentPage")
+	
 	PageButton.MouseButton1Click:Connect(function()
-		local MainBox = CarnageGUI:FindFirstChild("MainBox")
-		local CurrentPage = MainBox:FindFirstChild("CurrentPage")
-		
 		if CurrentPage.Value then
-			local CurrentPageButton = CurrentPage.Value:FindFirstChild("PageButton")
-			CurrentPageButton.Value.BackgroundTransparency = 1
-			CurrentPage.Value.Visible = false
+			if CurrentPage.Value ~= PageFrame then
+				local CurrentPageButton = CurrentPage.Value:FindFirstChild("PageButton")
+				CurrentPageButton.Value.BackgroundTransparency = 1
+				CurrentPage.Value.Visible = false
+			end
 		end
 		
 		PageButton.BackgroundTransparency = 0
