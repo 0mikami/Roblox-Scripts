@@ -404,7 +404,7 @@ function CarnageLibrary:NewSlider()
 		end
 	end)
 	
-	return SliderFrame, SliderPercentage
+	return SliderFrame, SliderText, SliderPercentage
 end
 
 return CarnageLibrary
