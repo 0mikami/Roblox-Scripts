@@ -1,19 +1,15 @@
 local CarnageLibrary = {}
 
-local Players = game:GetService("Players")
 local CoreGui = game:GetService("CoreGui")
 local HttpService = game:GetService("HttpService")
 local UserInputService = game:GetService("UserInputService")
 local RunService = game:GetService("RunService")
 
-local LocalPlayer = Players.LocalPlayer
-local PlayerGui = LocalPlayer.CoreGui
-
 local CarnageGUI = Instance.new("ScreenGui")
 CarnageGUI.IgnoreGuiInset = true
 CarnageGUI.Name = HttpService:GenerateGUID()
 CarnageGUI.ResetOnSpawn = false
-CarnageGUI.Parent = PlayerGui
+CarnageGUI.Parent = CoreGui
 
 function CarnageLibrary:MainBox()
 	local MainBox = Instance.new("Frame")
