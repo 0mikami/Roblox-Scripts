@@ -13,7 +13,7 @@ local CarnageGUI = Instance.new("ScreenGui")
 CarnageGUI.IgnoreGuiInset = true
 CarnageGUI.Name = HttpService:GenerateGUID()
 CarnageGUI.ResetOnSpawn = false
-CarnageGUI.Parent = CoreGui
+CarnageGUI.Parent = PlayerGui
 
 function CarnageLibrary:MainBox()
 	local MainBox = Instance.new("Frame")
@@ -43,8 +43,8 @@ function CarnageLibrary:MainBox()
 	local TopBarCorner = Instance.new("UICorner")
 	TopBarCorner.CornerRadius = UDim.new(0, 5)
 	TopBarCorner.Parent = TopBar
-	
-	local TitleText = Instance.new("TextLabel")
+
+	local TitleText = Instance.new("TextButton")
 	TitleText.Name = "TitleText"
 	TitleText.AnchorPoint = Vector2.new(0, 0.5)
 	TitleText.AutomaticSize = Enum.AutomaticSize.X
@@ -62,33 +62,14 @@ function CarnageLibrary:MainBox()
 	TitleText.TextStrokeColor3 = Color3.fromRGB(255, 255, 255)
 	TitleText.TextWrapped = true
 	TitleText.Parent = TopBar
-	
+
 	local TitleTextPadding = Instance.new("UIPadding")
 	TitleTextPadding.PaddingBottom = UDim.new(0, 5)
 	TitleTextPadding.PaddingLeft = UDim.new(0, 5)
 	TitleTextPadding.PaddingRight = UDim.new(0, 5)
 	TitleTextPadding.PaddingTop = UDim.new(0, 5)
 	TitleTextPadding.Parent = TitleText
-		
-	local OpenButton = Instance.new("TextButton")
-	OpenButton.Name = "OpenButton"
-	OpenButton.AnchorPoint = Vector2.new(1, 0.5)
-	OpenButton.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-	OpenButton.BackgroundTransparency = 1
-	OpenButton.BorderColor3 = Color3.fromRGB(0, 0, 0)
-	OpenButton.BorderSizePixel = 0
-	OpenButton.Position = UDim2.new(1, 0, 0.5, 0)
-	OpenButton.Size = UDim2.new(1, 0, 1, 0)
-	OpenButton.SizeConstraint = Enum.SizeConstraint.RelativeYY
-	OpenButton.Font = Enum.Font.Arial
-	OpenButton.Text = "+"
-	OpenButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-	OpenButton.TextScaled = true
-	OpenButton.TextSize = 15
-	OpenButton.TextStrokeTransparency = 0
-	OpenButton.TextWrapped = true
-	OpenButton.Parent = TopBar
-	
+
 	local NavigationBar = Instance.new("Frame")
 	NavigationBar.Name = "NavigationBar"
 	NavigationBar.AnchorPoint = Vector2.new(0.5, 0)
@@ -99,48 +80,65 @@ function CarnageLibrary:MainBox()
 	NavigationBar.Position = UDim2.new(0.5, 0, 0, 30)
 	NavigationBar.Size = UDim2.new(1, -5, 0, 30)
 	NavigationBar.Parent = MainBox
-	
+
 	local NavigationBarListLayout = Instance.new("UIListLayout")
 	NavigationBarListLayout.FillDirection = Enum.FillDirection.Horizontal
 	NavigationBarListLayout.SortOrder = Enum.SortOrder.LayoutOrder
 	NavigationBarListLayout.VerticalAlignment = Enum.VerticalAlignment.Center
 	NavigationBarListLayout.Padding = UDim.new(0, 5)
 	NavigationBarListLayout.Parent = NavigationBar
-	
+
+	local GuiActive = Instance.new("BoolValue")
+	GuiActive.Name = "Active"
+	GuiActive.Value = true
+	GuiActive.Parent = MainBox
+
+	GuiActive.Changed:Connect(function(Value)
+		if Value then
+			GuiActive.Value = false
+			MainBox.Visible = false
+		else
+			GuiActive.Value = true
+			MainBox.Visible = true
+		end
+	end)
+
 	local CurrentPage = Instance.new("ObjectValue")
 	CurrentPage.Name = "CurrentPage"
 	CurrentPage.Value = nil
 	CurrentPage.Parent = MainBox
-	
+
 	CurrentPage.Changed:Connect(function(Value)
 		CurrentPage.Value.Visible = true
 	end)
-	
+
 	TopBar.InputBegan:Connect(function(Input)
 		if Input.UserInputType == Enum.UserInputType.MouseButton1 then
 			local RelativeXPosition = (Input.Position.X - MainBox.AbsolutePosition.X) / MainBox.Size.X.Offset
 			local RelativeYPosition = (Input.Position.Y - MainBox.AbsolutePosition.Y) / MainBox.Size.Y.Offset
-			
+
 			MainBox.AnchorPoint = Vector2.new(RelativeXPosition,RelativeYPosition)
-			
+
 			RunService:BindToRenderStep("MoveGuiToMouse",10,function()
 				local MouseLocation = UserInputService:GetMouseLocation()
-				
+
 				MainBox.Position = UDim2.fromOffset(MouseLocation.X,MouseLocation.Y)
 			end)
 		end
 	end)
+
 	TopBar.InputEnded:Connect(function(Input)
 		if Input.UserInputType == Enum.UserInputType.MouseButton1 then
 			RunService:UnbindFromRenderStep("MoveGuiToMouse")
 		end
 	end)
-	
-	return MainBox
+
+	return MainBox, GuiActive, NavigationBar, CurrentPage
 end
 
 function CarnageLibrary:NewPage()
 	local PageFrame = Instance.new("Frame")
+	PageFrame.Name = "Page"
 	PageFrame.AnchorPoint = Vector2.new(0.5, 1)
 	PageFrame.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
 	PageFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
@@ -148,7 +146,7 @@ function CarnageLibrary:NewPage()
 	PageFrame.Position = UDim2.new(0.5, 0, 1, -5)
 	PageFrame.Visible = false
 	PageFrame.Size = UDim2.new(1, -10, 1, -70)
-	
+
 	local SectionPadding = Instance.new("UIPadding")
 	SectionPadding.PaddingBottom = UDim.new(0, 10)
 	SectionPadding.PaddingLeft = UDim.new(0, 10)
@@ -161,61 +159,63 @@ function CarnageLibrary:NewPage()
 	SectionListLayout.SortOrder = Enum.SortOrder.LayoutOrder
 	SectionListLayout.Padding = UDim.new(0, 10)
 	SectionListLayout.Parent = PageFrame
-	
+
 	local PageButton = Instance.new("TextButton")
 	PageButton.Name = "PageButton"
+	PageButton.AutomaticSize = Enum.AutomaticSize.X
 	PageButton.Active = false
 	PageButton.AnchorPoint = Vector2.new(0, 0.5)
-	PageButton.AutomaticSize = Enum.AutomaticSize.X
 	PageButton.BackgroundColor3 = Color3.fromRGB(200, 40, 40)
-	PageButton.BackgroundTransparency = 1
+	PageButton.BackgroundTransparency = 1.000
 	PageButton.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	PageButton.BorderSizePixel = 0
 	PageButton.Position = UDim2.new(0, 0, 0.5, 0)
 	PageButton.Size = UDim2.new(0, 0, 1, 0)
 	PageButton.AutoButtonColor = false
 	PageButton.Font = Enum.Font.Arial
-	PageButton.Text = "Page"
+	PageButton.Text = "ESP"
 	PageButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-	PageButton.TextSize = 14.000
+	PageButton.TextSize = 15.000
 	PageButton.TextStrokeTransparency = 0.000
-	
+
 	local PageButtonCorner = Instance.new("UICorner")
 	PageButtonCorner.CornerRadius = UDim.new(0, 10)
 	PageButtonCorner.Parent = PageButton
-	
+
 	local PageButtonPadding = Instance.new("UIPadding")
 	PageButtonPadding.PaddingLeft = UDim.new(0, 5)
 	PageButtonPadding.PaddingRight = UDim.new(0, 5)
 	PageButtonPadding.Parent = PageButton
-	
+
 	local PageButtonPointer = Instance.new("ObjectValue")
-	PageButtonPointer.Name = "PageButton"
+	PageButtonPointer.Name = "PageButtonPointer"
 	PageButtonPointer.Value = PageButton
 	PageButtonPointer.Parent = PageFrame
-	
+
 	local MainBox = CarnageGUI:FindFirstChild("MainBox")
 	local CurrentPage = MainBox:FindFirstChild("CurrentPage")
-	
+
 	PageButton.MouseButton1Click:Connect(function()
 		if CurrentPage.Value then
 			if CurrentPage.Value ~= PageFrame then
-				local CurrentPageButton = CurrentPage.Value:FindFirstChild("PageButton")
+				local CurrentPageButton = CurrentPage.Value:FindFirstChild("PageButtonPointer")
 				CurrentPageButton.Value.BackgroundTransparency = 1
 				CurrentPage.Value.Visible = false
 			end
 		end
-		
+
 		PageButton.BackgroundTransparency = 0
 		CurrentPage.Value = PageFrame
 	end)
-	
-	return PageFrame,PageButton
+
+	return PageFrame, PageButton
 end
 
 function CarnageLibrary:NewSection()
 	local Section = Instance.new("ScrollingFrame")
+	Section.Name = "Section"
 	Section.Active = true
+	Section.AutomaticCanvasSize = Enum.AutomaticSize.Y
 	Section.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 	Section.BackgroundTransparency = 1.000
 	Section.BorderColor3 = Color3.fromRGB(0, 0, 0)
@@ -224,17 +224,18 @@ function CarnageLibrary:NewSection()
 	Section.CanvasSize = UDim2.new(0, 0, 0, 0)
 	Section.ScrollBarThickness = 0
 	Section.ScrollingDirection = Enum.ScrollingDirection.Y
-	
+
 	local SectionListLayout = Instance.new("UIListLayout")
 	SectionListLayout.SortOrder = Enum.SortOrder.LayoutOrder
 	SectionListLayout.Padding = UDim.new(0, 10)
 	SectionListLayout.Parent = Section
-	
+
 	return Section
 end
 
 function CarnageLibrary:NewFeature()
 	local FeatureFrame = Instance.new("Frame")
+	FeatureFrame.Name = "Feature"
 	FeatureFrame.AnchorPoint = Vector2.new(0.5, 0.5)
 	FeatureFrame.AutomaticSize = Enum.AutomaticSize.Y
 	FeatureFrame.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
@@ -254,7 +255,7 @@ function CarnageLibrary:NewFeature()
 	FeatureListLayout.SortOrder = Enum.SortOrder.LayoutOrder
 	FeatureListLayout.Padding = UDim.new(0, 10)
 	FeatureListLayout.Parent = FeatureFrame
-	
+
 	local FeatureTitle = Instance.new("TextLabel")
 	FeatureTitle.Name = "FeatureTitle"
 	FeatureTitle.AnchorPoint = Vector2.new(0.5, 0)
@@ -264,92 +265,170 @@ function CarnageLibrary:NewFeature()
 	FeatureTitle.BorderSizePixel = 0
 	FeatureTitle.Size = UDim2.new(1, 0, 0, 16)
 	FeatureTitle.Font = Enum.Font.SourceSans
-	FeatureTitle.Text = "TITLE"
+	FeatureTitle.Text = "Feature"
 	FeatureTitle.TextColor3 = Color3.fromRGB(255, 255, 255)
-	FeatureTitle.TextSize = 15.000
-	FeatureTitle.TextStrokeTransparency = 0.500
+	FeatureTitle.TextSize = 20.000
+	FeatureTitle.TextStrokeTransparency = 0.000
 	FeatureTitle.Parent = FeatureFrame
 
 	return FeatureFrame, FeatureTitle
 end
 
-function CarnageLibrary:NewButton()
-	local Button = Instance.new("TextButton")
-	Button.Name = "Button"
-	Button.Active = false
-	Button.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-	Button.BackgroundTransparency = 1.000
-	Button.BorderColor3 = Color3.fromRGB(0, 0, 0)
-	Button.BorderSizePixel = 0
-	Button.Size = UDim2.new(1, 0, 0, 16)
-	Button.Font = Enum.Font.SourceSans
-	Button.TextColor3 = Color3.fromRGB(255, 255, 255)
-	Button.TextSize = 16.000
-	Button.TextStrokeTransparency = 0.500
-	Button.TextXAlignment = Enum.TextXAlignment.Left
-	
-	local CheckboxFrame = Instance.new("Frame")
-	CheckboxFrame.Name = "CheckboxFrame"
-	CheckboxFrame.AnchorPoint = Vector2.new(1, 0.5)
-	CheckboxFrame.BackgroundColor3 = Color3.fromRGB(100, 100, 100)
-	CheckboxFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
-	CheckboxFrame.BorderSizePixel = 0
-	CheckboxFrame.Position = UDim2.new(1, 0, 0.5, 0)
-	CheckboxFrame.Size = UDim2.new(1, 0, 1, 0)
-	CheckboxFrame.SizeConstraint = Enum.SizeConstraint.RelativeYY
-	CheckboxFrame.Parent = Button
-	
-	local CheckboxFrameCorner = Instance.new("UICorner")
-	CheckboxFrameCorner.CornerRadius = UDim.new(1, 0)
-	CheckboxFrameCorner.Parent = CheckboxFrame
-	
-	local Check = Instance.new("Frame")
-	Check.Name = "Check"
-	Check.AnchorPoint = Vector2.new(0.5, 0.5)
-	Check.BackgroundColor3 = Color3.fromRGB(200, 40, 40)
-	Check.BorderColor3 = Color3.fromRGB(0, 0, 0)
-	Check.BorderSizePixel = 0
-	Check.Position = UDim2.new(0.5, 0, 0.5, 0)
-	Check.Size = UDim2.new(0.5, 0, 0.5, 0)
-	Check.Transparency = 1
-	Check.Parent = CheckboxFrame
-	
-	local CheckCorner = Instance.new("UICorner")
-	CheckCorner.CornerRadius = UDim.new(1, 0)
-	CheckCorner.Parent = Check
-	
-	local ButtonActive = Instance.new("BoolValue")
-	ButtonActive.Name = "ButtonActive"
-	ButtonActive.Value = false
-	ButtonActive.Parent = Button
-	
-	Button.InputBegan:Connect(function(Input)
-		if Input.UserInputType == Enum.UserInputType.MouseButton1 then
-			if ButtonActive.Value then
-				ButtonActive.Value = false
-				Check.Transparency = 1
-			else
-				ButtonActive.Value = true
-				Check.Transparency = 0
-			end
+function CarnageLibrary:NewRadioButton()
+	local RadioButton = Instance.new("TextButton")
+	RadioButton.Name = "RadioButton"
+	RadioButton.Active = false
+	RadioButton.AnchorPoint = Vector2.new(0.5,0)
+	RadioButton.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	RadioButton.BackgroundTransparency = 1.000
+	RadioButton.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	RadioButton.BorderSizePixel = 0
+	RadioButton.Size = UDim2.new(1, 0, 0, 16)
+	RadioButton.Font = Enum.Font.Arial
+	RadioButton.Text = "RadioButton"
+	RadioButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+	RadioButton.TextSize = 15.000
+	RadioButton.TextStrokeTransparency = 0.500
+	RadioButton.TextXAlignment = Enum.TextXAlignment.Left
+
+	local RadioButtonFrame = Instance.new("Frame")
+	RadioButtonFrame.Name = "RadioButtonFrame"
+	RadioButtonFrame.AnchorPoint = Vector2.new(1, 0.5)
+	RadioButtonFrame.BackgroundColor3 = Color3.fromRGB(100, 100, 100)
+	RadioButtonFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	RadioButtonFrame.BorderSizePixel = 0
+	RadioButtonFrame.Position = UDim2.new(1, 0, 0.5, 0)
+	RadioButtonFrame.Size = UDim2.new(0.75, 0, 0.75, 0)
+	RadioButtonFrame.SizeConstraint = Enum.SizeConstraint.RelativeYY
+	RadioButtonFrame.Parent = RadioButton
+
+	local RadioButtonFrameCorner = Instance.new("UICorner")
+	RadioButtonFrameCorner.CornerRadius = UDim.new(1, 0)
+	RadioButtonFrameCorner.Parent = RadioButtonFrame
+
+	local RadioButtonCircle = Instance.new("Frame")
+	RadioButtonCircle.Name = "RadioButtonCircle"
+	RadioButtonCircle.AnchorPoint = Vector2.new(0.5, 0.5)
+	RadioButtonCircle.BackgroundColor3 = Color3.fromRGB(200, 40, 40)
+	RadioButtonCircle.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	RadioButtonCircle.BorderSizePixel = 0
+	RadioButtonCircle.Position = UDim2.new(0.5, 0, 0.5, 0)
+	RadioButtonCircle.Size = UDim2.new(0.5, 0, 0.5, 0)
+	RadioButtonCircle.Transparency = 1
+	RadioButtonCircle.Parent = RadioButtonFrame
+
+	local RadioButtonCircleCorner = Instance.new("UICorner")
+	RadioButtonCircleCorner.CornerRadius = UDim.new(1, 0)
+	RadioButtonCircleCorner.Parent = RadioButtonCircle
+
+	local RadioButtonActive = Instance.new("BoolValue")
+	RadioButtonActive.Name = "RadioButtonActive"
+	RadioButtonActive.Value = false
+	RadioButtonActive.Parent = RadioButton
+
+	RadioButtonActive.Changed:Connect(function(Value)
+		if Value then
+			RadioButtonActive.Value = false
+			RadioButtonCircle.Transparency = 1
+		else
+			RadioButtonActive.Value = true
+			RadioButtonCircle.Transparency = 0
 		end
 	end)
-	
-	return Button, ButtonActive
+
+	RadioButton.MouseButton1Click:Connect(function()
+		if RadioButtonActive.Value then
+			RadioButtonActive.Value = false
+			RadioButtonCircle.Transparency = 1
+		else
+			RadioButtonActive.Value = true
+			RadioButtonCircle.Transparency = 0
+		end
+	end)
+
+	return RadioButton, RadioButtonActive
+end
+
+function CarnageLibrary:NewCheckboxButton()
+	local CheckboxButton = Instance.new("TextButton")
+	CheckboxButton.Name = "CheckboxButton"
+	CheckboxButton.Active = false
+	CheckboxButton.AnchorPoint = Vector2.new(0.5, 0)
+	CheckboxButton.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	CheckboxButton.BackgroundTransparency = 1.000
+	CheckboxButton.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	CheckboxButton.BorderSizePixel = 0
+	CheckboxButton.Size = UDim2.new(1, 0, 0, 16)
+	CheckboxButton.Font = Enum.Font.Arial
+	CheckboxButton.Text = "Checkbox"
+	CheckboxButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+	CheckboxButton.TextSize = 15.000
+	CheckboxButton.TextStrokeTransparency = 0.000
+	CheckboxButton.TextXAlignment = Enum.TextXAlignment.Left
+
+	local CheckboxButtonFrame = Instance.new("Frame")
+	CheckboxButtonFrame.Name = "CheckboxButtonFrame"
+	CheckboxButtonFrame.AnchorPoint = Vector2.new(1, 0.5)
+	CheckboxButtonFrame.BackgroundColor3 = Color3.fromRGB(100, 100, 100)
+	CheckboxButtonFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	CheckboxButtonFrame.BorderSizePixel = 0
+	CheckboxButtonFrame.Position = UDim2.new(1, 0, 0.5, 0)
+	CheckboxButtonFrame.Size = UDim2.new(0.75, 0, 0.75, 0)
+	CheckboxButtonFrame.SizeConstraint = Enum.SizeConstraint.RelativeYY
+	CheckboxButtonFrame.Parent = CheckboxButton
+
+	local CheckboxButtonTick = Instance.new("Frame")
+	CheckboxButtonTick.Name = "CheckboxButtonTick"
+	CheckboxButtonTick.AnchorPoint = Vector2.new(0.5, 0.5)
+	CheckboxButtonTick.BackgroundColor3 = Color3.fromRGB(200, 40, 40)
+	CheckboxButtonTick.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	CheckboxButtonTick.BorderSizePixel = 0
+	CheckboxButtonTick.Position = UDim2.new(0.5, 0, 0.5, 0)
+	CheckboxButtonTick.Size = UDim2.new(0.5, 0, 0.5, 0)
+	CheckboxButtonTick.Transparency = 1
+	CheckboxButtonTick.Parent = CheckboxButtonFrame
+
+	local CheckboxButtonActive = Instance.new("BoolValue")
+	CheckboxButtonActive.Name = "RadioButtonActive"
+	CheckboxButtonActive.Value = false
+	CheckboxButtonActive.Parent = CheckboxButton
+
+	CheckboxButtonActive.Changed:Connect(function(Value)
+		if Value then
+			CheckboxButtonActive.Value = false
+			CheckboxButtonTick.Transparency = 1
+		else
+			CheckboxButtonActive.Value = true
+			CheckboxButtonTick.Transparency = 0
+		end
+	end)
+
+	CheckboxButton.MouseButton1Click:Connect(function()
+		if CheckboxButtonActive.Value then
+			CheckboxButtonActive.Value = false
+			CheckboxButtonTick.Transparency = 1
+		else
+			CheckboxButtonActive.Value = true
+			CheckboxButtonTick.Transparency = 0
+		end
+	end)
+
+	return CheckboxButton, CheckboxButtonActive
 end
 
 function CarnageLibrary:NewSlider()
 	local SliderFrame = Instance.new("Frame")
 	SliderFrame.Name = "SliderFrame"
+	SliderFrame.AnchorPoint = Vector2.new(0.5, 0)
 	SliderFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 	SliderFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	SliderFrame.BorderSizePixel = 0
 	SliderFrame.Size = UDim2.new(1, 0, 0, 16)
-	
+
 	local SliderFrameCorner = Instance.new("UICorner")
 	SliderFrameCorner.CornerRadius = UDim.new(0.25, 0)
 	SliderFrameCorner.Parent = SliderFrame
-	
+
 	local SliderText = Instance.new("TextLabel")
 	SliderText.Name = "SliderText"
 	SliderText.AnchorPoint = Vector2.new(0.5, 0.5)
@@ -366,7 +445,7 @@ function CarnageLibrary:NewSlider()
 	SliderText.TextStrokeTransparency = 0.500
 	SliderText.ZIndex = 2
 	SliderText.Parent = SliderFrame
-	
+
 	local SliderBar = Instance.new("Frame")
 	SliderBar.Name = "SliderBar"
 	SliderBar.AnchorPoint = Vector2.new(0, 0.5)
@@ -376,34 +455,34 @@ function CarnageLibrary:NewSlider()
 	SliderBar.Position = UDim2.new(0, 0, 0.5, 0)
 	SliderBar.Size = UDim2.new(0.5, 0, 1, 0)
 	SliderBar.Parent = SliderFrame
-	
+
 	local SliderBarCorner = Instance.new("UICorner")
 	SliderBarCorner.CornerRadius = UDim.new(0.25, 0)
 	SliderBarCorner.Parent = SliderBar
-	
+
 	local SliderPercentage = Instance.new("NumberValue")
 	SliderPercentage.Name = "SliderPercentage"
 	SliderPercentage.Value = 1
 	SliderPercentage.Parent = SliderFrame
-	
+
 	SliderFrame.InputBegan:Connect(function(Input)
 		if Input.UserInputType == Enum.UserInputType.MouseButton1 then
 			RunService:BindToRenderStep("MoveSliderToMouse",10,function()
 				local MouseLocation = UserInputService:GetMouseLocation()
 				local RelativeXPosition = math.clamp((MouseLocation.X - SliderFrame.AbsolutePosition.X) / SliderFrame.AbsoluteSize.X, 0, 1)
-				
+
 				SliderBar.Size = UDim2.fromScale(RelativeXPosition,1)
 				SliderPercentage.Value = RelativeXPosition
 			end)
 		end
 	end)
-	
+
 	SliderFrame.InputEnded:Connect(function(Input)
 		if Input.UserInputType == Enum.UserInputType.MouseButton1 then
 			RunService:UnbindFromRenderStep("MoveSliderToMouse")
 		end
 	end)
-	
+
 	return SliderFrame, SliderText, SliderPercentage
 end
 
