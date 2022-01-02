@@ -515,10 +515,6 @@ function CarnageLibrary:NewKeybindSetter()
 	KeybindSetterCorner.CornerRadius = UDim.new(0, 5)
 	KeybindSetterCorner.Parent = Key
 
-	local Keybind = Instance.new("StringValue")
-	Keybind.Name = "Keybind"
-	Keybind.Parent = KeybindSetter
-
 	local Feature = Instance.new("ObjectValue")
 	Feature.Name = "Feature"
 	Feature.Parent = KeybindSetter
@@ -548,30 +544,26 @@ function CarnageLibrary:NewKeybindSetter()
 			return KeybindConnection
 		end
 
-		KeyListener = UserInputService.InputBegan:Connect(function(Input, Typing)
-			if not Typing then
-				if not Input.KeyCode or Input.KeyCode == Enum.KeyCode.Escape then
-					Keybind.Value = ""
-					Key.Text = "Key"
+		KeyListener = UserInputService.InputBegan:Connect(function(Input)
+			if Input.UserInputType ~= Enum.UserInputType.Keyboard or Input.KeyCode == Enum.KeyCode.Escape then
+				Key.Text = "Key"
 
-					return
-				end
+				return
+			end
 
-				if Input.KeyCode then
-					local KeyString = tostring(Input.KeyCode)
-					KeyString = string.gsub(KeyString,"Enum.KeyCode.","")
+			if Input.KeyCode then
+				local KeyString = tostring(Input.KeyCode)
+				KeyString = string.gsub(KeyString,"Enum.KeyCode.","")
 
-					Keybind.Value = KeyString
-					Key.Text = KeyString
+				Key.Text = KeyString
 
-					CurrentKeybindConnection = CreateKeybind(KeyString)
-					KeyListener:Disconnect()
-				end
+				CurrentKeybindConnection = CreateKeybind(KeyString)
+				KeyListener:Disconnect()
 			end
 		end)
 	end)
 
-	return KeybindSetter, Keybind, Feature
+	return KeybindSetter, Feature
 end
 
 return CarnageLibrary
