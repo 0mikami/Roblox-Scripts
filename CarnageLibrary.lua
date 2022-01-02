@@ -183,7 +183,7 @@ function CarnageLibrary:NewPage()
 	PageButton.Size = UDim2.new(0, 0, 1, 0)
 	PageButton.AutoButtonColor = false
 	PageButton.Font = Enum.Font.Arial
-	PageButton.Text = "ESP"
+	PageButton.Text = "Page"
 	PageButton.TextColor3 = Color3.fromRGB(255, 255, 255)
 	PageButton.TextSize = 15.000
 	PageButton.TextStrokeTransparency = 0.000
