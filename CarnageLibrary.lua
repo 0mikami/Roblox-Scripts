@@ -91,11 +91,9 @@ function CarnageLibrary:MainBox()
 
 	GuiActive.Changed:Connect(function(Value)
 		if Value then
-			GuiActive.Value = false
-			MainBox.Visible = false
-		else
-			GuiActive.Value = true
 			MainBox.Visible = true
+		else
+			MainBox.Visible = false
 		end
 	end)
 
@@ -461,11 +459,11 @@ function CarnageLibrary:NewSlider(SliderFrameText)
 	SliderPercentage.Name = "SliderPercentage"
 	SliderPercentage.Value = SliderBar.Size.X.Scale
 	SliderPercentage.Parent = SliderFrame
-	
+
 	SliderPercentage.Changed:Connect(function(Value)
 		SliderBar.Size = UDim2.new(Value, 0, 1, 0)
 	end)
-	
+
 	SliderFrame.InputBegan:Connect(function(Input)
 		if Input.UserInputType == Enum.UserInputType.MouseButton1 then
 			RunService:BindToRenderStep("MoveSliderToMouse",10,function()
@@ -513,7 +511,7 @@ function CarnageLibrary:NewKeybindSetter(KeybindText, FeatureToBind)
 	Key.Position = UDim2.new(1, 0, 0.5, 0)
 	Key.Size = UDim2.new(0.225, 0, 1, 0)
 	Key.Font = Enum.Font.Arial
-	Key.Text = "Key"
+	Key.Text = "No Key Set"
 	Key.TextColor3 = Color3.fromRGB(255, 255, 255)
 	Key.TextScaled = true
 	Key.TextSize = 15.000
@@ -528,6 +526,11 @@ function CarnageLibrary:NewKeybindSetter(KeybindText, FeatureToBind)
 	Feature.Name = "Feature"
 	Feature.Value = FeatureToBind
 	Feature.Parent = KeybindSetter
+
+	local CurrentKeybind = Instance.new("StringValue")
+	CurrentKeybind.Name = "Keybind"
+	CurrentKeybind.Value = ""
+	CurrentKeybind.Parent = KeybindSetter
 
 	local CurrentKeybindConnection = nil
 	local KeyListener = nil
@@ -556,29 +559,34 @@ function CarnageLibrary:NewKeybindSetter(KeybindText, FeatureToBind)
 
 		KeyListener = UserInputService.InputBegan:Connect(function(Input)
 			if Input.UserInputType ~= Enum.UserInputType.Keyboard or Input.KeyCode == Enum.KeyCode.Escape then
-				Key.Text = "Key"
+				if CurrentKeybind.Value ~= "" then
+					Key.Text = CurrentKeybind.Value
+				else
+					Key.Text = "No Key Set"
+				end
+
 				KeyListener:Disconnect()
 
 				return
 			end
 
-			if Input.KeyCode then
-				local KeyString = tostring(Input.KeyCode)
-				KeyString = string.gsub(KeyString,"Enum.KeyCode.","")
+			local KeyString = tostring(Input.KeyCode)
+			KeyString = string.gsub(KeyString,"Enum.KeyCode.","")
 
-				Key.Text = KeyString
+			CurrentKeybind.Value = KeyString
+			Key.Text = KeyString
 
-				if CurrentKeybindConnection then
-					CurrentKeybindConnection:Disconnect()
-				end
-
-				CurrentKeybindConnection = CreateKeybind(KeyString)
-				KeyListener:Disconnect()
+			if CurrentKeybindConnection then
+				CurrentKeybindConnection:Disconnect()
 			end
+
+			CurrentKeybindConnection = CreateKeybind(KeyString)
+			KeyListener:Disconnect()
+
 		end)
 	end)
 
-	return KeybindSetter, Feature
+	return KeybindSetter
 end
 
 return CarnageLibrary
