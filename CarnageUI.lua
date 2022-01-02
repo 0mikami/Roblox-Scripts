@@ -324,11 +324,9 @@ function CarnageLibrary:NewRadioButton()
 
 	RadioButtonActive.Changed:Connect(function(Value)
 		if Value then
-			RadioButtonActive.Value = false
-			RadioButtonCircle.Transparency = 1
-		else
-			RadioButtonActive.Value = true
 			RadioButtonCircle.Transparency = 0
+		else
+			RadioButtonCircle.Transparency = 1
 		end
 	end)
 
@@ -391,11 +389,9 @@ function CarnageLibrary:NewCheckboxButton()
 
 	CheckboxButtonActive.Changed:Connect(function(Value)
 		if Value then
-			CheckboxButtonActive.Value = false
-			CheckboxButtonTick.Transparency = 1
-		else
-			CheckboxButtonActive.Value = true
 			CheckboxButtonTick.Transparency = 0
+		else
+			CheckboxButtonTick.Transparency = 1
 		end
 	end)
 
@@ -480,6 +476,102 @@ function CarnageLibrary:NewSlider()
 	end)
 
 	return SliderFrame, SliderText, SliderPercentage
+end
+
+function CarnageLibrary:NewKeybindSetter()
+	local KeybindSetter = Instance.new("TextButton")
+	KeybindSetter.Name = "KeybindSetter"
+	KeybindSetter.Active = false
+	KeybindSetter.AnchorPoint = Vector2.new(0.5, 0)
+	KeybindSetter.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	KeybindSetter.BackgroundTransparency = 1.000
+	KeybindSetter.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	KeybindSetter.BorderSizePixel = 0
+	KeybindSetter.Size = UDim2.new(1, 0, 0, 16)
+	KeybindSetter.Font = Enum.Font.Arial
+	KeybindSetter.Text = "Keybind"
+	KeybindSetter.TextColor3 = Color3.fromRGB(255, 255, 255)
+	KeybindSetter.TextSize = 15.000
+	KeybindSetter.TextStrokeTransparency = 0.000
+	KeybindSetter.TextXAlignment = Enum.TextXAlignment.Left
+
+	local Key = Instance.new("TextLabel")
+	Key.Name = "Key"
+	Key.AnchorPoint = Vector2.new(1, 0.5)
+	Key.BackgroundColor3 = Color3.fromRGB(100, 100, 100)
+	Key.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	Key.BorderSizePixel = 0
+	Key.Position = UDim2.new(1, 0, 0.5, 0)
+	Key.Size = UDim2.new(0.225, 0, 1, 0)
+	Key.Font = Enum.Font.Arial
+	Key.Text = "Key"
+	Key.TextColor3 = Color3.fromRGB(255, 255, 255)
+	Key.TextScaled = true
+	Key.TextSize = 15.000
+	Key.TextWrapped = true
+	Key.Parent = KeybindSetter
+
+	local KeybindSetterCorner = Instance.new("UICorner")
+	KeybindSetterCorner.CornerRadius = UDim.new(0, 5)
+	KeybindSetterCorner.Parent = Key
+
+	local Keybind = Instance.new("StringValue")
+	Keybind.Name = "Keybind"
+	Keybind.Parent = KeybindSetter
+
+	local Feature = Instance.new("ObjectValue")
+	Feature.Name = "Feature"
+	Feature.Parent = KeybindSetter
+
+	KeybindSetter.MouseButton1Click:Connect(function()
+		local CurrentKeybindConnection = nil
+		local KeyListener = nil
+
+		Key.Text = ". . ."
+
+		local function CreateKeybind(KeyString)
+			local KeybindConnection = nil
+
+			KeybindConnection = UserInputService.InputBegan:Connect(function(Input,Typing)
+				if not Typing then
+					if Input.KeyCode == Enum.KeyCode[KeyString] then
+						local FeatureActive = Feature.Value
+						if FeatureActive.Value then
+							FeatureActive.Value = false
+						else
+							FeatureActive.Value = true
+						end
+					end
+				end
+			end)
+
+			return KeybindConnection
+		end
+
+		KeyListener = UserInputService.InputBegan:Connect(function(Input, Typing)
+			if not Typing then
+				if not Input.KeyCode or Input.KeyCode == Enum.KeyCode.Escape then
+					Keybind.Value = ""
+					Key.Text = "Key"
+
+					return
+				end
+
+				if Input.KeyCode then
+					local KeyString = tostring(Input.KeyCode)
+					KeyString = string.gsub(KeyString,"Enum.KeyCode.","")
+
+					Keybind.Value = KeyString
+					Key.Text = KeyString
+
+					CurrentKeybindConnection = CreateKeybind(KeyString)
+					KeyListener:Disconnect()
+				end
+			end
+		end)
+	end)
+
+	return KeybindSetter, Keybind, Feature
 end
 
 return CarnageLibrary
