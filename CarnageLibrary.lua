@@ -388,7 +388,7 @@ function CarnageLibrary:NewCheckboxButton()
 	CheckboxButtonTick.Parent = CheckboxButtonFrame
 
 	local CheckboxButtonActive = Instance.new("BoolValue")
-	CheckboxButtonActive.Name = "RadioButtonActive"
+	CheckboxButtonActive.Name = "CheckboxButtonActive"
 	CheckboxButtonActive.Value = false
 	CheckboxButtonActive.Parent = CheckboxButton
 
