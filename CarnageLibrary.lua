@@ -99,13 +99,27 @@ function CarnageLibrary:MainBox()
 		end
 	end)
 
-	local CurrentPage = Instance.new("ObjectValue")
-	CurrentPage.Name = "CurrentPage"
-	CurrentPage.Value = nil
-	CurrentPage.Parent = MainBox
+	local CurrentPagePointer = Instance.new("ObjectValue")
+	CurrentPagePointer.Name = "CurrentPage"
+	CurrentPagePointer.Value = nil
+	CurrentPagePointer.Parent = MainBox
 
-	CurrentPage.Changed:Connect(function(Value)
-		CurrentPage.Value.Visible = true
+	local CurrentPage = CurrentPagePointer.Value
+
+	CurrentPagePointer.Changed:Connect(function(NewPage)
+		if CurrentPage and CurrentPage ~= NewPage then
+			local OldPageButton = CurrentPage:FindFirstChild("PageButtonPointer").Value
+
+			CurrentPage.Visible = false
+			OldPageButton.BackgroundTransparency = 1
+		end
+
+		local NewPageButton = NewPage:FindFirstChild("PageButtonPointer").Value
+
+		NewPage.Visible = true
+		NewPageButton.BackgroundTransparency = 0
+
+		CurrentPage = NewPage
 	end)
 
 	TopBar.InputBegan:Connect(function(Input)
@@ -129,7 +143,7 @@ function CarnageLibrary:MainBox()
 		end
 	end)
 
-	return MainBox, GuiActive, NavigationBar, CurrentPage
+	return MainBox, GuiActive, NavigationBar, CurrentPagePointer
 end
 
 function CarnageLibrary:NewPage()
@@ -192,15 +206,6 @@ function CarnageLibrary:NewPage()
 	local CurrentPage = MainBox:FindFirstChild("CurrentPage")
 
 	PageButton.MouseButton1Click:Connect(function()
-		if CurrentPage.Value then
-			if CurrentPage.Value ~= PageFrame then
-				local CurrentPageButton = CurrentPage.Value:FindFirstChild("PageButtonPointer")
-				CurrentPageButton.Value.BackgroundTransparency = 1
-				CurrentPage.Value.Visible = false
-			end
-		end
-
-		PageButton.BackgroundTransparency = 0
 		CurrentPage.Value = PageFrame
 	end)
 
@@ -478,7 +483,7 @@ function CarnageLibrary:NewSlider()
 	return SliderFrame, SliderText, SliderPercentage
 end
 
-function CarnageLibrary:NewKeybindSetter()
+function CarnageLibrary:NewKeybindSetter(FeatureToBind)
 	local KeybindSetter = Instance.new("TextButton")
 	KeybindSetter.Name = "KeybindSetter"
 	KeybindSetter.Active = false
@@ -517,12 +522,13 @@ function CarnageLibrary:NewKeybindSetter()
 
 	local Feature = Instance.new("ObjectValue")
 	Feature.Name = "Feature"
+	Feature.Value = FeatureToBind
 	Feature.Parent = KeybindSetter
 
-	KeybindSetter.MouseButton1Click:Connect(function()
-		local CurrentKeybindConnection = nil
-		local KeyListener = nil
+	local CurrentKeybindConnection = nil
+	local KeyListener = nil
 
+	KeybindSetter.MouseButton1Click:Connect(function()
 		Key.Text = ". . ."
 
 		local function CreateKeybind(KeyString)
@@ -547,6 +553,7 @@ function CarnageLibrary:NewKeybindSetter()
 		KeyListener = UserInputService.InputBegan:Connect(function(Input)
 			if Input.UserInputType ~= Enum.UserInputType.Keyboard or Input.KeyCode == Enum.KeyCode.Escape then
 				Key.Text = "Key"
+				KeyListener:Disconnect()
 
 				return
 			end
@@ -556,6 +563,10 @@ function CarnageLibrary:NewKeybindSetter()
 				KeyString = string.gsub(KeyString,"Enum.KeyCode.","")
 
 				Key.Text = KeyString
+
+				if CurrentKeybindConnection then
+					CurrentKeybindConnection:Disconnect()
+				end
 
 				CurrentKeybindConnection = CreateKeybind(KeyString)
 				KeyListener:Disconnect()
