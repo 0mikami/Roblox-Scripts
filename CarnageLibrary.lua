@@ -413,9 +413,9 @@ function CarnageLibrary:NewCheckboxButton(CheckboxButtonText)
 	return CheckboxButton, CheckboxButtonActive
 end
 
-function CarnageLibrary:NewSlider(SliderText)
+function CarnageLibrary:NewSlider(SliderFrameText)
 	local SliderFrame = Instance.new("Frame")
-	SliderFrame.Name = SliderText or "SliderFrame"
+	SliderFrame.Name = SliderFrameText or "SliderFrame"
 	SliderFrame.AnchorPoint = Vector2.new(0.5, 0)
 	SliderFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 	SliderFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
