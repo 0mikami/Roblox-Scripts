@@ -146,9 +146,9 @@ function CarnageLibrary:MainBox()
 	return MainBox, GuiActive, NavigationBar, CurrentPagePointer
 end
 
-function CarnageLibrary:NewPage()
+function CarnageLibrary:NewPage(PageText)
 	local PageFrame = Instance.new("Frame")
-	PageFrame.Name = "Page"
+	PageFrame.Name = PageText or "Page"
 	PageFrame.AnchorPoint = Vector2.new(0.5, 1)
 	PageFrame.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
 	PageFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
@@ -183,7 +183,7 @@ function CarnageLibrary:NewPage()
 	PageButton.Size = UDim2.new(0, 0, 1, 0)
 	PageButton.AutoButtonColor = false
 	PageButton.Font = Enum.Font.Arial
-	PageButton.Text = "Page"
+	PageButton.Text = PageText or "Page"
 	PageButton.TextColor3 = Color3.fromRGB(255, 255, 255)
 	PageButton.TextSize = 15.000
 	PageButton.TextStrokeTransparency = 0.000
@@ -234,9 +234,9 @@ function CarnageLibrary:NewSection()
 	return Section
 end
 
-function CarnageLibrary:NewFeature()
+function CarnageLibrary:NewFeature(FeatureText)
 	local FeatureFrame = Instance.new("Frame")
-	FeatureFrame.Name = "Feature"
+	FeatureFrame.Name = FeatureText or "Feature"
 	FeatureFrame.AnchorPoint = Vector2.new(0.5, 0.5)
 	FeatureFrame.AutomaticSize = Enum.AutomaticSize.Y
 	FeatureFrame.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
@@ -266,18 +266,18 @@ function CarnageLibrary:NewFeature()
 	FeatureTitle.BorderSizePixel = 0
 	FeatureTitle.Size = UDim2.new(1, 0, 0, 16)
 	FeatureTitle.Font = Enum.Font.SourceSans
-	FeatureTitle.Text = "Feature"
+	FeatureTitle.Text = FeatureText or "Feature"
 	FeatureTitle.TextColor3 = Color3.fromRGB(255, 255, 255)
 	FeatureTitle.TextSize = 20.000
 	FeatureTitle.TextStrokeTransparency = 0.000
 	FeatureTitle.Parent = FeatureFrame
 
-	return FeatureFrame, FeatureTitle
+	return FeatureFrame
 end
 
-function CarnageLibrary:NewRadioButton()
+function CarnageLibrary:NewRadioButton(RadioButtonText)
 	local RadioButton = Instance.new("TextButton")
-	RadioButton.Name = "RadioButton"
+	RadioButton.Name = RadioButtonText or "RadioButton"
 	RadioButton.Active = false
 	RadioButton.AnchorPoint = Vector2.new(0.5,0)
 	RadioButton.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
@@ -286,7 +286,7 @@ function CarnageLibrary:NewRadioButton()
 	RadioButton.BorderSizePixel = 0
 	RadioButton.Size = UDim2.new(1, 0, 0, 16)
 	RadioButton.Font = Enum.Font.Arial
-	RadioButton.Text = "RadioButton"
+	RadioButton.Text = RadioButtonText or "RadioButton"
 	RadioButton.TextColor3 = Color3.fromRGB(255, 255, 255)
 	RadioButton.TextSize = 15.000
 	RadioButton.TextStrokeTransparency = 0.500
@@ -348,9 +348,9 @@ function CarnageLibrary:NewRadioButton()
 	return RadioButton, RadioButtonActive
 end
 
-function CarnageLibrary:NewCheckboxButton()
+function CarnageLibrary:NewCheckboxButton(CheckboxButtonText)
 	local CheckboxButton = Instance.new("TextButton")
-	CheckboxButton.Name = "CheckboxButton"
+	CheckboxButton.Name = CheckboxButtonText or "CheckboxButton"
 	CheckboxButton.Active = false
 	CheckboxButton.AnchorPoint = Vector2.new(0.5, 0)
 	CheckboxButton.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
@@ -359,7 +359,7 @@ function CarnageLibrary:NewCheckboxButton()
 	CheckboxButton.BorderSizePixel = 0
 	CheckboxButton.Size = UDim2.new(1, 0, 0, 16)
 	CheckboxButton.Font = Enum.Font.Arial
-	CheckboxButton.Text = "Checkbox"
+	CheckboxButton.Text = CheckboxButtonText or "Checkbox"
 	CheckboxButton.TextColor3 = Color3.fromRGB(255, 255, 255)
 	CheckboxButton.TextSize = 15.000
 	CheckboxButton.TextStrokeTransparency = 0.000
@@ -413,9 +413,9 @@ function CarnageLibrary:NewCheckboxButton()
 	return CheckboxButton, CheckboxButtonActive
 end
 
-function CarnageLibrary:NewSlider()
+function CarnageLibrary:NewSlider(SliderText)
 	local SliderFrame = Instance.new("Frame")
-	SliderFrame.Name = "SliderFrame"
+	SliderFrame.Name = SliderText or "SliderFrame"
 	SliderFrame.AnchorPoint = Vector2.new(0.5, 0)
 	SliderFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 	SliderFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
@@ -459,9 +459,13 @@ function CarnageLibrary:NewSlider()
 
 	local SliderPercentage = Instance.new("NumberValue")
 	SliderPercentage.Name = "SliderPercentage"
-	SliderPercentage.Value = 1
+	SliderPercentage.Value = SliderBar.Size.X.Scale
 	SliderPercentage.Parent = SliderFrame
-
+	
+	SliderPercentage.Changed:Connect(function(Value)
+		SliderBar.Size = UDim2.new(Value, 0, 1, 0)
+	end)
+	
 	SliderFrame.InputBegan:Connect(function(Input)
 		if Input.UserInputType == Enum.UserInputType.MouseButton1 then
 			RunService:BindToRenderStep("MoveSliderToMouse",10,function()
@@ -483,9 +487,9 @@ function CarnageLibrary:NewSlider()
 	return SliderFrame, SliderText, SliderPercentage
 end
 
-function CarnageLibrary:NewKeybindSetter(FeatureToBind)
+function CarnageLibrary:NewKeybindSetter(KeybindText, FeatureToBind)
 	local KeybindSetter = Instance.new("TextButton")
-	KeybindSetter.Name = "KeybindSetter"
+	KeybindSetter.Name = KeybindText or "KeybindSetter"
 	KeybindSetter.Active = false
 	KeybindSetter.AnchorPoint = Vector2.new(0.5, 0)
 	KeybindSetter.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
@@ -494,7 +498,7 @@ function CarnageLibrary:NewKeybindSetter(FeatureToBind)
 	KeybindSetter.BorderSizePixel = 0
 	KeybindSetter.Size = UDim2.new(1, 0, 0, 16)
 	KeybindSetter.Font = Enum.Font.Arial
-	KeybindSetter.Text = "Keybind"
+	KeybindSetter.Text = KeybindText or "Keybind"
 	KeybindSetter.TextColor3 = Color3.fromRGB(255, 255, 255)
 	KeybindSetter.TextSize = 15.000
 	KeybindSetter.TextStrokeTransparency = 0.000
