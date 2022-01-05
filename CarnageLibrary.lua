@@ -543,7 +543,7 @@ function CarnageLibrary:NewSlider(SliderFrameText)
 		end
 	end)
 
-	return SliderHolderFrame, SliderText, SliderPercentage, SliderTextBox
+	return SliderHolderFrame, SliderText, SliderPercentage, SliderTextBox, SliderNumber
 end
 
 function CarnageLibrary:NewKeybindSetter(KeybindText, FeatureToBind)
