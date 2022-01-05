@@ -144,6 +144,89 @@ function CarnageLibrary:MainBox()
 	return MainBox, GuiActive, NavigationBar, CurrentPagePointer
 end
 
+function CarnageLibrary:NewBox(BoxName, BoxSize)
+	local Box = Instance.new("Frame")
+	Box.Name = "Box"
+	Box.AnchorPoint = Vector2.new(0.5, 0.5)
+	Box.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+	Box.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	Box.BorderSizePixel = 0
+	Box.Position = UDim2.new(0.5, 0, 0.5, 0)
+	Box.Size = BoxSize or UDim2.new(0, 500, 0, 300)
+	Box.ZIndex = 5
+	Box.Parent = CarnageGUI
+	
+	local BoxListLayout = Instance.new("UIListLayout")
+	BoxListLayout.SortOrder = Enum.SortOrder.LayoutOrder
+	BoxListLayout.Padding = UDim.new(0, 5)
+	BoxListLayout.Parent = Box
+	
+	local BoxPadding = Instance.new("UIPadding")
+	BoxPadding.PaddingBottom = UDim.new(0, 10)
+	BoxPadding.PaddingLeft = UDim.new(0, 10)
+	BoxPadding.PaddingRight = UDim.new(0, 10)
+	BoxPadding.PaddingTop = UDim.new(0, 10)
+	BoxPadding.Parent = Box
+	
+	local UICorner = Instance.new("UICorner")
+	UICorner.CornerRadius = UDim.new(0, 5)
+	UICorner.Parent = Box
+	
+	Box.InputBegan:Connect(function(Input)
+		if Input.UserInputType == Enum.UserInputType.MouseButton1 then
+			local RelativeXPosition = (Input.Position.X - Box.AbsolutePosition.X) / Box.Size.X.Offset
+			local RelativeYPosition = (Input.Position.Y - Box.AbsolutePosition.Y) / Box.Size.Y.Offset
+
+			Box.AnchorPoint = Vector2.new(RelativeXPosition,RelativeYPosition)
+
+			RunService:BindToRenderStep("MoveGuiToMouse",10,function()
+				local MouseLocation = UserInputService:GetMouseLocation()
+
+				Box.Position = UDim2.fromOffset(MouseLocation.X,MouseLocation.Y)
+			end)
+		end
+	end)
+
+	Box.InputEnded:Connect(function(Input)
+		if Input.UserInputType == Enum.UserInputType.MouseButton1 then
+			RunService:UnbindFromRenderStep("MoveGuiToMouse")
+		end
+	end)
+	
+	return Box
+end
+
+function CarnageLibrary:NewScrollFrame()
+	local ScrollingFrame = Instance.new("ScrollingFrame")
+	ScrollingFrame.Active = true
+	ScrollingFrame.AutomaticCanvasSize = Enum.AutomaticSize.Y
+	ScrollingFrame.AnchorPoint = Vector2.new(0.5, 0.5)
+	ScrollingFrame.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+	ScrollingFrame.BackgroundTransparency = 0.000
+	ScrollingFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	ScrollingFrame.BorderSizePixel = 0
+	ScrollingFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
+	ScrollingFrame.Size = UDim2.new(1, 0, 1, 0)
+	ScrollingFrame.CanvasSize = UDim2.new(0, 0, 1, 0)
+	ScrollingFrame.ScrollBarImageColor3 = Color3.fromRGB(200, 40, 40)
+	ScrollingFrame.ScrollBarThickness = 5
+	ScrollingFrame.ZIndex = 5
+
+	local ScrollingFrameListLayout = Instance.new("UIListLayout")
+	ScrollingFrameListLayout.SortOrder = Enum.SortOrder.LayoutOrder
+	ScrollingFrameListLayout.Padding = UDim.new(0, 5)
+	ScrollingFrameListLayout.Parent = ScrollingFrame
+
+	local ScrollingFramePadding = Instance.new("UIPadding")
+	ScrollingFramePadding.PaddingBottom = UDim.new(0, 5)
+	ScrollingFramePadding.PaddingLeft = UDim.new(0, 5)
+	ScrollingFramePadding.PaddingRight = UDim.new(0, 5)
+	ScrollingFramePadding.PaddingTop = UDim.new(0, 5)
+	ScrollingFramePadding.Parent = ScrollingFrame
+	
+	return ScrollingFrame
+end
+
 function CarnageLibrary:NewPage(PageText)
 	local PageFrame = Instance.new("Frame")
 	PageFrame.Name = PageText or "Page"
