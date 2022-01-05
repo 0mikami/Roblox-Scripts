@@ -178,7 +178,7 @@ function CarnageLibrary:NewPage(PageText)
 	PageButton.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	PageButton.BorderSizePixel = 0
 	PageButton.Position = UDim2.new(0, 0, 0.5, 0)
-	PageButton.Size = UDim2.new(0, 0, 1, 0)
+	PageButton.Size = UDim2.new(0, 0, 0.75, 0)
 	PageButton.AutoButtonColor = false
 	PageButton.Font = Enum.Font.Arial
 	PageButton.Text = PageText or "Page"
@@ -412,13 +412,24 @@ function CarnageLibrary:NewCheckboxButton(CheckboxButtonText)
 end
 
 function CarnageLibrary:NewSlider(SliderFrameText)
+	local SliderHolderFrame = Instance.new("Frame")
+	SliderHolderFrame.Name = SliderFrameText or "SliderHolderFrameFrame"
+	SliderHolderFrame.AnchorPoint = Vector2.new(0.5, 0)
+	SliderHolderFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	SliderHolderFrame.BackgroundTransparency = 1.000
+	SliderHolderFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	SliderHolderFrame.BorderSizePixel = 0
+	SliderHolderFrame.Size = UDim2.new(1, 0, 0, 16)
+
 	local SliderFrame = Instance.new("Frame")
-	SliderFrame.Name = SliderFrameText or "SliderFrame"
-	SliderFrame.AnchorPoint = Vector2.new(0.5, 0)
+	SliderFrame.Name = "SliderFrame"
+	SliderFrame.AnchorPoint = Vector2.new(0, 0.5)
 	SliderFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 	SliderFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	SliderFrame.BorderSizePixel = 0
-	SliderFrame.Size = UDim2.new(1, 0, 0, 16)
+	SliderFrame.Position = UDim2.new(0, 0, 0.5, 0)
+	SliderFrame.Size = UDim2.new(0.75, 0, 0, 16)
+	SliderFrame.Parent = SliderHolderFrame
 
 	local SliderFrameCorner = Instance.new("UICorner")
 	SliderFrameCorner.CornerRadius = UDim.new(0.25, 0)
@@ -455,13 +466,63 @@ function CarnageLibrary:NewSlider(SliderFrameText)
 	SliderBarCorner.CornerRadius = UDim.new(0.25, 0)
 	SliderBarCorner.Parent = SliderBar
 
+	local SliderTextBox = Instance.new("TextBox")
+	SliderTextBox.Name = "SliderTextBox"
+	SliderTextBox.AnchorPoint = Vector2.new(1, 0.5)
+	SliderTextBox.BackgroundColor3 = Color3.fromRGB(100, 100, 100)
+	SliderTextBox.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	SliderTextBox.BorderSizePixel = 0
+	SliderTextBox.ClearTextOnFocus = false
+	SliderTextBox.Position = UDim2.new(1, 0, 0.5, 0)
+	SliderTextBox.Size = UDim2.new(0.224999994, 0, 1, 0)
+	SliderTextBox.Font = Enum.Font.Arial
+	SliderTextBox.PlaceholderColor3 = Color3.fromRGB(255, 255, 255)
+	SliderTextBox.Text = ""
+	SliderTextBox.TextColor3 = Color3.fromRGB(255, 255, 255)
+	SliderTextBox.TextScaled = true
+	SliderTextBox.TextSize = 15.000
+	SliderTextBox.TextWrapped = true
+	SliderTextBox.Parent = SliderHolderFrame
+
+	local SliderTextBoxCorner = Instance.new("UICorner")
+	SliderTextBoxCorner.CornerRadius = UDim.new(0, 5)
+	SliderTextBoxCorner.Parent = SliderTextBox	
+
 	local SliderPercentage = Instance.new("NumberValue")
 	SliderPercentage.Name = "SliderPercentage"
 	SliderPercentage.Value = SliderBar.Size.X.Scale
-	SliderPercentage.Parent = SliderFrame
+	SliderPercentage.Parent = SliderHolderFrame
+
+	local SliderNumber = Instance.new("NumberValue")
+	SliderNumber.Name = "SliderNumber"
+	SliderNumber.Parent = SliderHolderFrame
 
 	SliderPercentage.Changed:Connect(function(Value)
 		SliderBar.Size = UDim2.new(Value, 0, 1, 0)
+	end)
+
+	SliderNumber.Changed:Connect(function(Value)
+		SliderTextBox.Text = tonumber(Value)
+	end)
+
+	SliderTextBox.FocusLost:Connect(function(Enter,Input)
+		if Enter then
+			if tonumber(SliderTextBox.Text) then
+				SliderNumber.Value = tonumber(SliderTextBox.Text)
+			else
+				SliderTextBox.Text = tostring(SliderNumber.Value)
+			end
+		else
+			if Input.UserInputType == Enum.UserInputType.MouseButton1 then
+				if tonumber(SliderTextBox.Text) then
+					SliderNumber.Value = tonumber(SliderTextBox.Text)
+				else
+					SliderTextBox.Text = tostring(SliderNumber.Value)
+				end
+			else
+				SliderTextBox.Text = tostring(SliderNumber.Value)
+			end
+		end
 	end)
 
 	SliderFrame.InputBegan:Connect(function(Input)
@@ -482,7 +543,7 @@ function CarnageLibrary:NewSlider(SliderFrameText)
 		end
 	end)
 
-	return SliderFrame, SliderText, SliderPercentage
+	return SliderHolderFrame, SliderText, SliderPercentage, SliderTextBox
 end
 
 function CarnageLibrary:NewKeybindSetter(KeybindText, FeatureToBind)
@@ -582,7 +643,6 @@ function CarnageLibrary:NewKeybindSetter(KeybindText, FeatureToBind)
 
 			CurrentKeybindConnection = CreateKeybind(KeyString)
 			KeyListener:Disconnect()
-
 		end)
 	end)
 
