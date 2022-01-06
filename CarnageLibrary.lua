@@ -155,23 +155,23 @@ function CarnageLibrary:NewBox(BoxName, BoxSize)
 	Box.Size = BoxSize or UDim2.new(0, 500, 0, 300)
 	Box.ZIndex = 5
 	Box.Parent = CarnageGUI
-	
+
 	local BoxListLayout = Instance.new("UIListLayout")
 	BoxListLayout.SortOrder = Enum.SortOrder.LayoutOrder
 	BoxListLayout.Padding = UDim.new(0, 5)
 	BoxListLayout.Parent = Box
-	
+
 	local BoxPadding = Instance.new("UIPadding")
 	BoxPadding.PaddingBottom = UDim.new(0, 10)
 	BoxPadding.PaddingLeft = UDim.new(0, 10)
 	BoxPadding.PaddingRight = UDim.new(0, 10)
 	BoxPadding.PaddingTop = UDim.new(0, 10)
 	BoxPadding.Parent = Box
-	
+
 	local UICorner = Instance.new("UICorner")
 	UICorner.CornerRadius = UDim.new(0, 5)
 	UICorner.Parent = Box
-	
+
 	Box.InputBegan:Connect(function(Input)
 		if Input.UserInputType == Enum.UserInputType.MouseButton1 then
 			local RelativeXPosition = (Input.Position.X - Box.AbsolutePosition.X) / Box.Size.X.Offset
@@ -192,7 +192,7 @@ function CarnageLibrary:NewBox(BoxName, BoxSize)
 			RunService:UnbindFromRenderStep("MoveGuiToMouse")
 		end
 	end)
-	
+
 	return Box
 end
 
@@ -223,7 +223,7 @@ function CarnageLibrary:NewScrollFrame()
 	ScrollingFramePadding.PaddingRight = UDim.new(0, 5)
 	ScrollingFramePadding.PaddingTop = UDim.new(0, 5)
 	ScrollingFramePadding.Parent = ScrollingFrame
-	
+
 	return ScrollingFrame
 end
 
