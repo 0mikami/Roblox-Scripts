@@ -519,23 +519,6 @@ function CarnageLibrary:NewSlider(SliderFrameText)
 	SliderFrameCorner.CornerRadius = UDim.new(0.25, 0)
 	SliderFrameCorner.Parent = SliderFrame
 
-	local SliderText = Instance.new("TextLabel")
-	SliderText.Name = "SliderText"
-	SliderText.AnchorPoint = Vector2.new(0.5, 0.5)
-	SliderText.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-	SliderText.BackgroundTransparency = 1.000
-	SliderText.BorderColor3 = Color3.fromRGB(0, 0, 0)
-	SliderText.BorderSizePixel = 0
-	SliderText.Position = UDim2.new(0.5, 0, 0.5, 0)
-	SliderText.Size = UDim2.new(1, 0, 1, 0)
-	SliderText.Font = Enum.Font.Arial
-	SliderText.Text = "Placeholder"
-	SliderText.TextColor3 = Color3.fromRGB(255, 255, 255)
-	SliderText.TextSize = 15.000
-	SliderText.TextStrokeTransparency = 0.500
-	SliderText.ZIndex = 2
-	SliderText.Parent = SliderFrame
-
 	local SliderBar = Instance.new("Frame")
 	SliderBar.Name = "SliderBar"
 	SliderBar.AnchorPoint = Vector2.new(0, 0.5)
@@ -627,7 +610,7 @@ function CarnageLibrary:NewSlider(SliderFrameText)
 		end
 	end)
 
-	return SliderHolderFrame, SliderText, SliderPercentage, SliderTextBox, SliderNumber
+	return SliderHolderFrame, SliderPercentage, SliderTextBox, SliderNumber
 end
 
 function CarnageLibrary:NewKeybindSetter(KeybindText, FeatureToBind)
