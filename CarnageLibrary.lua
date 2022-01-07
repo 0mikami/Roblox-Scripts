@@ -569,7 +569,7 @@ function CarnageLibrary:NewSlider(SliderFrameText)
 	end)
 
 	SliderNumber.Changed:Connect(function(Value)
-		SliderTextBox.Text = tonumber(Value)
+		SliderTextBox.Text = tostring(Value)
 	end)
 
 	SliderTextBox.FocusLost:Connect(function(Enter,Input)
