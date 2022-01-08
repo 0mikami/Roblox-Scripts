@@ -145,87 +145,124 @@ function CarnageLibrary:MainBox()
 	return MainBox, GuiActive, NavigationBar, CurrentPagePointer
 end
 
-function CarnageLibrary:NewBox(BoxName, BoxSize)
-	local Box = Instance.new("Frame")
-	Box.Name = "Box"
-	Box.AnchorPoint = Vector2.new(0.5, 0.5)
-	Box.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
-	Box.BorderColor3 = Color3.fromRGB(0, 0, 0)
-	Box.BorderSizePixel = 0
-	Box.Position = UDim2.new(0.5, 0, 0.5, 0)
-	Box.Size = BoxSize or UDim2.new(0, 500, 0, 300)
-	Box.ZIndex = 5
-	Box.Parent = CarnageGUI
+function CarnageLibrary:ChatLogs()
+	local ChatLogs = Instance.new("Frame")
+	ChatLogs.Name = "ChatLogs"
+	ChatLogs.AnchorPoint = Vector2.new(0.5, 0.5)
+	ChatLogs.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+	ChatLogs.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	ChatLogs.BorderSizePixel = 0
+	ChatLogs.Position = UDim2.new(0.5, 0, 0.5, 0)
+	ChatLogs.Size = UDim2.new(0, 500, 0, 300)
+	ChatLogs.ZIndex = 2
+	ChatLogs.Parent = CarnageGUI
 
 	local BoxListLayout = Instance.new("UIListLayout")
 	BoxListLayout.SortOrder = Enum.SortOrder.LayoutOrder
 	BoxListLayout.Padding = UDim.new(0, 5)
-	BoxListLayout.Parent = Box
+	BoxListLayout.Parent = ChatLogs
 
 	local BoxPadding = Instance.new("UIPadding")
 	BoxPadding.PaddingBottom = UDim.new(0, 10)
 	BoxPadding.PaddingLeft = UDim.new(0, 10)
 	BoxPadding.PaddingRight = UDim.new(0, 10)
 	BoxPadding.PaddingTop = UDim.new(0, 10)
-	BoxPadding.Parent = Box
+	BoxPadding.Parent = ChatLogs
 
 	local UICorner = Instance.new("UICorner")
 	UICorner.CornerRadius = UDim.new(0, 5)
-	UICorner.Parent = Box
-
-	Box.InputBegan:Connect(function(Input)
-		if Input.UserInputType == Enum.UserInputType.MouseButton1 then
-			local RelativeXPosition = (Input.Position.X - Box.AbsolutePosition.X) / Box.Size.X.Offset
-			local RelativeYPosition = (Input.Position.Y - Box.AbsolutePosition.Y) / Box.Size.Y.Offset
-
-			Box.AnchorPoint = Vector2.new(RelativeXPosition,RelativeYPosition)
-
-			RunService:BindToRenderStep("MoveGuiToMouse",10,function()
-				local MouseLocation = UserInputService:GetMouseLocation()
-
-				Box.Position = UDim2.fromOffset(MouseLocation.X,MouseLocation.Y)
-			end)
-		end
-	end)
-
-	Box.InputEnded:Connect(function(Input)
-		if Input.UserInputType == Enum.UserInputType.MouseButton1 then
-			RunService:UnbindFromRenderStep("MoveGuiToMouse")
-		end
-	end)
-
-	return Box
-end
-
-function CarnageLibrary:NewScrollFrame()
-	local ScrollingFrame = Instance.new("ScrollingFrame")
-	ScrollingFrame.Active = true
-	ScrollingFrame.AutomaticCanvasSize = Enum.AutomaticSize.Y
-	ScrollingFrame.AnchorPoint = Vector2.new(0.5, 0.5)
-	ScrollingFrame.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-	ScrollingFrame.BackgroundTransparency = 0.000
-	ScrollingFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
-	ScrollingFrame.BorderSizePixel = 0
-	ScrollingFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
-	ScrollingFrame.Size = UDim2.new(1, 0, 1, 0)
-	ScrollingFrame.CanvasSize = UDim2.new(0, 0, 1, 0)
-	ScrollingFrame.ScrollBarImageColor3 = Color3.fromRGB(200, 40, 40)
-	ScrollingFrame.ScrollBarThickness = 5
-	ScrollingFrame.ZIndex = 5
+	UICorner.Parent = ChatLogs
+	
+	local ChatScrollFrame = Instance.new("ScrollingFrame")
+	ChatScrollFrame.Active = true
+	ChatScrollFrame.AutomaticCanvasSize = Enum.AutomaticSize.Y
+	ChatScrollFrame.AnchorPoint = Vector2.new(0.5, 0.5)
+	ChatScrollFrame.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+	ChatScrollFrame.BackgroundTransparency = 0.000
+	ChatScrollFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	ChatScrollFrame.BorderSizePixel = 0
+	ChatScrollFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
+	ChatScrollFrame.Size = UDim2.new(1, 0, 1, 0)
+	ChatScrollFrame.CanvasSize = UDim2.new(0, 0, 1, 0)
+	ChatScrollFrame.ScrollBarImageColor3 = Color3.fromRGB(200, 40, 40)
+	ChatScrollFrame.ScrollBarThickness = 2
+	ChatScrollFrame.ZIndex = 2
 
 	local ScrollingFrameListLayout = Instance.new("UIListLayout")
 	ScrollingFrameListLayout.SortOrder = Enum.SortOrder.LayoutOrder
 	ScrollingFrameListLayout.Padding = UDim.new(0, 5)
-	ScrollingFrameListLayout.Parent = ScrollingFrame
+	ScrollingFrameListLayout.Parent = ChatScrollFrame
 
 	local ScrollingFramePadding = Instance.new("UIPadding")
 	ScrollingFramePadding.PaddingBottom = UDim.new(0, 5)
 	ScrollingFramePadding.PaddingLeft = UDim.new(0, 5)
 	ScrollingFramePadding.PaddingRight = UDim.new(0, 5)
 	ScrollingFramePadding.PaddingTop = UDim.new(0, 5)
-	ScrollingFramePadding.Parent = ScrollingFrame
+	ScrollingFramePadding.Parent = ChatScrollFrame
+	
+	local MaxCanvasPosition = ChatScrollFrame.AbsoluteCanvasSize.Y - ChatScrollFrame.AbsoluteWindowSize.Y
+	
+	ChatScrollFrame.Changed:Connect(function(Property)
+		if Property == "AbsoluteCanvasSize" then
+			if ChatScrollFrame.CanvasPosition.Y >= MaxCanvasPosition then
+				MaxCanvasPosition = ChatScrollFrame.AbsoluteCanvasSize.Y - ChatScrollFrame.AbsoluteWindowSize.Y
+				ChatScrollFrame.CanvasPosition = Vector2.new(0, MaxCanvasPosition)
+			end
+		end
+	end)
+	
+	ChatLogs.InputBegan:Connect(function(Input)
+		if Input.UserInputType == Enum.UserInputType.MouseButton1 then
+			local RelativeXPosition = (Input.Position.X - ChatLogs.AbsolutePosition.X) / ChatLogs.Size.X.Offset
+			local RelativeYPosition = (Input.Position.Y - ChatLogs.AbsolutePosition.Y) / ChatLogs.Size.Y.Offset
 
-	return ScrollingFrame
+			ChatLogs.AnchorPoint = Vector2.new(RelativeXPosition,RelativeYPosition)
+
+			RunService:BindToRenderStep("MoveGuiToMouse",10,function()
+				local MouseLocation = UserInputService:GetMouseLocation()
+
+				ChatLogs.Position = UDim2.fromOffset(MouseLocation.X,MouseLocation.Y)
+			end)
+		end
+	end)
+
+	ChatLogs.InputEnded:Connect(function(Input)
+		if Input.UserInputType == Enum.UserInputType.MouseButton1 then
+			RunService:UnbindFromRenderStep("MoveGuiToMouse")
+		end
+	end)
+	
+	local ChatTable = {}
+	
+	local function AddChatText(GameName, UserName, Chat)
+		local ChatTextLabel = Instance.new("TextLabel")
+		ChatTextLabel.AnchorPoint = Vector2.new(0.5, 0)
+		ChatTextLabel.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+		ChatTextLabel.BackgroundTransparency = 1.000
+		ChatTextLabel.BorderColor3 = Color3.fromRGB(0, 0, 0)
+		ChatTextLabel.BorderSizePixel = 0
+		ChatTextLabel.Size = UDim2.new(1, 0, 0, 16)
+		ChatTextLabel.Font = Enum.Font.Arial
+		ChatTextLabel.Text = "["..GameName.."]".." "..Chat
+		ChatTextLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+		ChatTextLabel.TextSize = 15.000
+		ChatTextLabel.TextStrokeTransparency = 0.000
+		ChatTextLabel.TextXAlignment = Enum.TextXAlignment.Left
+		ChatTextLabel.ZIndex = 5
+		ChatTextLabel.Parent = ChatScrollFrame
+
+		ChatTextLabel.MouseEnter:Connect(function()
+			ChatTextLabel.Text = "["..UserName.."]".." "..Chat
+		end)
+
+		ChatTextLabel.MouseLeave:Connect(function()
+			ChatTextLabel.Text = "["..GameName.."]".." "..Chat
+		end)
+
+		table.insert(ChatTable, ChatTextLabel)
+	end
+	
+	return ChatLogs, ChatTable, AddChatText
 end
 
 function CarnageLibrary:NewPage(PageText)
