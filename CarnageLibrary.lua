@@ -158,15 +158,11 @@ function CarnageLibrary:ChatLogs()
 	ChatLogs.Parent = CarnageGUI
 
 	local ChatLogsPadding = Instance.new("UIPadding")
-	ChatLogsPadding.PaddingBottom = UDim.new(0, 10)
-	ChatLogsPadding.PaddingLeft = UDim.new(0, 10)
-	ChatLogsPadding.PaddingRight = UDim.new(0, 10)
-	ChatLogsPadding.PaddingTop = UDim.new(0, 10)
+	ChatLogsPadding.PaddingBottom = UDim.new(0, 5)
+	ChatLogsPadding.PaddingLeft = UDim.new(0, 5)
+	ChatLogsPadding.PaddingRight = UDim.new(0, 5)
+	ChatLogsPadding.PaddingTop = UDim.new(0, 5)
 	ChatLogsPadding.Parent = ChatLogs
-
-	local UICorner = Instance.new("UICorner")
-	UICorner.CornerRadius = UDim.new(0, 5)
-	UICorner.Parent = ChatLogs
 	
 	local ChatScrollFrame = Instance.new("ScrollingFrame")
 	ChatScrollFrame.Active = true
@@ -233,26 +229,28 @@ function CarnageLibrary:ChatLogs()
 	local function AddChatText(GameName, UserName, Chat)
 		local ChatTextLabel = Instance.new("TextLabel")
 		ChatTextLabel.AnchorPoint = Vector2.new(0.5, 0)
+		ChatTextLabel.AutomaticSize = Enum.AutomaticSize.Y
 		ChatTextLabel.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 		ChatTextLabel.BackgroundTransparency = 1.000
 		ChatTextLabel.BorderColor3 = Color3.fromRGB(0, 0, 0)
 		ChatTextLabel.BorderSizePixel = 0
 		ChatTextLabel.Size = UDim2.new(1, 0, 0, 16)
-		ChatTextLabel.Font = Enum.Font.Arial
-		ChatTextLabel.Text = "["..GameName.."]".." "..Chat
+		ChatTextLabel.Font = Enum.Font.Gotham
+		ChatTextLabel.Text = "["..GameName.."]".." : "..Chat
 		ChatTextLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
 		ChatTextLabel.TextSize = 15.000
-		ChatTextLabel.TextStrokeTransparency = 0.000
+		ChatTextLabel.TextStrokeTransparency = 1
+		ChatTextLabel.TextWrapped = true
 		ChatTextLabel.TextXAlignment = Enum.TextXAlignment.Left
 		ChatTextLabel.ZIndex = 5
 		ChatTextLabel.Parent = ChatScrollFrame
 
 		ChatTextLabel.MouseEnter:Connect(function()
-			ChatTextLabel.Text = "["..UserName.."]".." "..Chat
+			ChatTextLabel.Text = "["..UserName.."]".." : "..Chat
 		end)
 
 		ChatTextLabel.MouseLeave:Connect(function()
-			ChatTextLabel.Text = "["..GameName.."]".." "..Chat
+			ChatTextLabel.Text = "["..GameName.."]".." : "..Chat
 		end)
 
 		table.insert(ChatTable, ChatTextLabel)
