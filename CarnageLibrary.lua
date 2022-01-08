@@ -157,17 +157,17 @@ function CarnageLibrary:ChatLogs()
 	ChatLogs.ZIndex = 2
 	ChatLogs.Parent = CarnageGUI
 
-	local BoxListLayout = Instance.new("UIListLayout")
-	BoxListLayout.SortOrder = Enum.SortOrder.LayoutOrder
-	BoxListLayout.Padding = UDim.new(0, 5)
-	BoxListLayout.Parent = ChatLogs
+	local ChatLogsListLayout = Instance.new("UIListLayout")
+	ChatLogsListLayout.SortOrder = Enum.SortOrder.LayoutOrder
+	ChatLogsListLayout.Padding = UDim.new(0, 5)
+	ChatLogsListLayout.Parent = ChatLogs
 
-	local BoxPadding = Instance.new("UIPadding")
-	BoxPadding.PaddingBottom = UDim.new(0, 10)
-	BoxPadding.PaddingLeft = UDim.new(0, 10)
-	BoxPadding.PaddingRight = UDim.new(0, 10)
-	BoxPadding.PaddingTop = UDim.new(0, 10)
-	BoxPadding.Parent = ChatLogs
+	local ChatLogsPadding = Instance.new("UIPadding")
+	ChatLogsPadding.PaddingBottom = UDim.new(0, 10)
+	ChatLogsPadding.PaddingLeft = UDim.new(0, 10)
+	ChatLogsPadding.PaddingRight = UDim.new(0, 10)
+	ChatLogsPadding.PaddingTop = UDim.new(0, 10)
+	ChatLogsPadding.Parent = ChatLogs
 
 	local UICorner = Instance.new("UICorner")
 	UICorner.CornerRadius = UDim.new(0, 5)
