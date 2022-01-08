@@ -157,11 +157,6 @@ function CarnageLibrary:ChatLogs()
 	ChatLogs.ZIndex = 2
 	ChatLogs.Parent = CarnageGUI
 
-	local ChatLogsListLayout = Instance.new("UIListLayout")
-	ChatLogsListLayout.SortOrder = Enum.SortOrder.LayoutOrder
-	ChatLogsListLayout.Padding = UDim.new(0, 5)
-	ChatLogsListLayout.Parent = ChatLogs
-
 	local ChatLogsPadding = Instance.new("UIPadding")
 	ChatLogsPadding.PaddingBottom = UDim.new(0, 10)
 	ChatLogsPadding.PaddingLeft = UDim.new(0, 10)
@@ -187,6 +182,7 @@ function CarnageLibrary:ChatLogs()
 	ChatScrollFrame.ScrollBarImageColor3 = Color3.fromRGB(200, 40, 40)
 	ChatScrollFrame.ScrollBarThickness = 2
 	ChatScrollFrame.ZIndex = 2
+	ChatScrollFrame.Parent = ChatLogs
 
 	local ScrollingFrameListLayout = Instance.new("UIListLayout")
 	ScrollingFrameListLayout.SortOrder = Enum.SortOrder.LayoutOrder
