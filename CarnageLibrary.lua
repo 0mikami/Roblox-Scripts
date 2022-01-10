@@ -163,7 +163,7 @@ function CarnageLibrary:ChatLogs()
 	ChatLogsPadding.PaddingRight = UDim.new(0, 5)
 	ChatLogsPadding.PaddingTop = UDim.new(0, 5)
 	ChatLogsPadding.Parent = ChatLogs
-	
+
 	local ChatScrollFrame = Instance.new("ScrollingFrame")
 	ChatScrollFrame.Active = true
 	ChatScrollFrame.AutomaticCanvasSize = Enum.AutomaticSize.Y
@@ -191,9 +191,9 @@ function CarnageLibrary:ChatLogs()
 	ScrollingFramePadding.PaddingRight = UDim.new(0, 5)
 	ScrollingFramePadding.PaddingTop = UDim.new(0, 5)
 	ScrollingFramePadding.Parent = ChatScrollFrame
-	
+
 	local MaxCanvasPosition = ChatScrollFrame.AbsoluteCanvasSize.Y - ChatScrollFrame.AbsoluteWindowSize.Y
-	
+
 	ChatScrollFrame.Changed:Connect(function(Property)
 		if Property == "AbsoluteCanvasSize" then
 			if ChatScrollFrame.CanvasPosition.Y >= MaxCanvasPosition then
@@ -202,7 +202,7 @@ function CarnageLibrary:ChatLogs()
 			end
 		end
 	end)
-	
+
 	ChatLogs.InputBegan:Connect(function(Input)
 		if Input.UserInputType == Enum.UserInputType.MouseButton1 then
 			local RelativeXPosition = (Input.Position.X - ChatLogs.AbsolutePosition.X) / ChatLogs.Size.X.Offset
@@ -223,9 +223,9 @@ function CarnageLibrary:ChatLogs()
 			RunService:UnbindFromRenderStep("MoveGuiToMouse")
 		end
 	end)
-	
+
 	local ChatTable = {}
-	
+
 	local function AddChatText(GameName, UserName, Chat)
 		local ChatTextLabel = Instance.new("TextLabel")
 		ChatTextLabel.AnchorPoint = Vector2.new(0.5, 0)
@@ -255,7 +255,7 @@ function CarnageLibrary:ChatLogs()
 
 		table.insert(ChatTable, ChatTextLabel)
 	end
-	
+
 	return ChatLogs, ChatTable, AddChatText
 end
 
@@ -526,9 +526,9 @@ function CarnageLibrary:NewCheckboxButton(CheckboxButtonText)
 	return CheckboxButton, CheckboxButtonActive
 end
 
-function CarnageLibrary:NewSlider(SliderFrameText)
+function CarnageLibrary:NewSlider(SliderFrameText, SliderInitialValue, SliderMax)
 	local SliderHolderFrame = Instance.new("Frame")
-	SliderHolderFrame.Name = SliderFrameText or "SliderHolderFrameFrame"
+	SliderHolderFrame.Name = SliderFrameText or "SliderHolderFrame"
 	SliderHolderFrame.AnchorPoint = Vector2.new(0.5, 0)
 	SliderHolderFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 	SliderHolderFrame.BackgroundTransparency = 1.000
@@ -586,22 +586,26 @@ function CarnageLibrary:NewSlider(SliderFrameText)
 	SliderTextBoxCorner.CornerRadius = UDim.new(0, 5)
 	SliderTextBoxCorner.Parent = SliderTextBox	
 
-	local SliderPercentage = Instance.new("NumberValue")
-	SliderPercentage.Name = "SliderPercentage"
-	SliderPercentage.Value = SliderBar.Size.X.Scale
-	SliderPercentage.Parent = SliderHolderFrame
-
 	local SliderNumber = Instance.new("NumberValue")
 	SliderNumber.Name = "SliderNumber"
 	SliderNumber.Parent = SliderHolderFrame
 
-	SliderPercentage.Changed:Connect(function(Value)
-		SliderBar.Size = UDim2.new(Value, 0, 1, 0)
-	end)
+	local SliderPercentage = Instance.new("NumberValue")
+	SliderPercentage.Name = "SliderPercentage"
+	SliderPercentage.Parent = SliderHolderFrame
 
 	SliderNumber.Changed:Connect(function(Value)
 		SliderTextBox.Text = tostring(Value)
+		SliderPercentage.Value = math.clamp(Value / SliderMax, 0, 1)
 	end)
+
+	SliderPercentage.Changed:Connect(function(Value)
+		SliderBar.Size = UDim2.new(Value, 0, 1, 0)
+		SliderNumber.Value = math.clamp(math.round(Value * SliderMax), 0, SliderMax)
+	end)
+
+	SliderNumber.Value = SliderInitialValue
+	SliderPercentage.Value = SliderInitialValue / SliderMax
 
 	SliderTextBox.FocusLost:Connect(function(Enter,Input)
 		if Enter then
