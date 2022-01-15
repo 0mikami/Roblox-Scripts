@@ -505,7 +505,7 @@ local Success, Error = pcall(function()
 
 			if Type == "Object" then
 				if ObjectEspEnabledRBActive.Value then
-					if MagnitudeCheck(Part, LocalRootPart) < ObjectEspDistanceSN and OnScreen then
+					if MagnitudeCheck(Part, LocalRootPart) < ObjectEspDistanceSN.Value and OnScreen then
 						Esp.Visible = true
 						Esp.Position = Vector2.new(Position.X, Position.Y - 25)
 
@@ -530,7 +530,7 @@ local Success, Error = pcall(function()
 				end
 			elseif Type == "Ingredient" then
 				if IngredientEspEnabledRBActive.Value then
-					if MagnitudeCheck(Part, LocalRootPart) < IngredientEspDistanceSN and OnScreen then
+					if MagnitudeCheck(Part, LocalRootPart) < IngredientEspDistanceSN.Value and OnScreen then
 						Esp.Visible = true
 						Esp.Position = Vector2.new(Position.X, Position.Y - 25)
 					else
@@ -541,7 +541,7 @@ local Success, Error = pcall(function()
 				end
 			elseif Type == "Ore" then
 				if OreEspEnabledRBActive.Value then
-					if MagnitudeCheck(Part, LocalRootPart) < OreEspDistanceSN and OnScreen then
+					if MagnitudeCheck(Part, LocalRootPart) < OreEspDistanceSN.Value and OnScreen then
 						Esp.Visible = true
 						Esp.Position = Vector2.new(Position.X, Position.Y - 25)
 					else
@@ -560,7 +560,7 @@ local Success, Error = pcall(function()
 
 				if Type == "Mob" then
 					if MobEspEnabledRBActive.Value then
-						if MagnitudeCheck(Part, LocalRootPart) < MobEspDistanceSN and OnScreen then
+						if MagnitudeCheck(Part, LocalRootPart) < MobEspDistanceSN.Value and OnScreen then
 							Esp.Visible = true
 							Esp.Position = Vector2.new(Position.X, Position.Y - 30)
 						else
@@ -571,7 +571,7 @@ local Success, Error = pcall(function()
 					end
 				elseif Type == "NPC" then
 					if NPCEspEnabledRBActive.Value then
-						if MagnitudeCheck(Part, LocalRootPart) < NPCEspDistanceSN and OnScreen then
+						if MagnitudeCheck(Part, LocalRootPart) < NPCEspDistanceSN.Value and OnScreen then
 							Esp.Visible = true
 							Esp.Position = Vector2.new(Position.X, Position.Y - 30)
 						else
@@ -583,7 +583,7 @@ local Success, Error = pcall(function()
 				elseif Type == "Player" then
 					if GameName and UserName and Guild then
 						if PlayerEspEnabledRBActive.Value then
-							if MagnitudeCheck(Part, LocalRootPart) < PlayerEspDistanceSN and OnScreen then
+							if MagnitudeCheck(Part, LocalRootPart) < PlayerEspDistanceSN.Value and OnScreen then
 								Esp.Visible = true
 								Esp.Position = Vector2.new(Position.X, Position.Y - 50)
 							else
