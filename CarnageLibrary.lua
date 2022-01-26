@@ -12,20 +12,20 @@ CarnageGUI.ResetOnSpawn = false
 syn.protect_gui(CarnageGUI)
 CarnageGUI.Parent = CoreGui
 
-function CarnageLibrary:MainBox()
-	local MainBox = Instance.new("Frame")
-	MainBox.Name = "MainBox"
-	MainBox.AnchorPoint = Vector2.new(0.5, 0.5)
-	MainBox.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
-	MainBox.BorderColor3 = Color3.fromRGB(0, 0, 0)
-	MainBox.BorderSizePixel = 0
-	MainBox.Position = UDim2.new(0.5, 0, 0.5, 0)
-	MainBox.Size = UDim2.new(0, 800, 0, 600)
-	MainBox.Parent = CarnageGUI
+function CarnageLibrary:MainWindow()
+	local MainWindow = Instance.new("Frame")
+	MainWindow.Name = "MainWindow"
+	MainWindow.AnchorPoint = Vector2.new(0.5, 0.5)
+	MainWindow.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+	MainWindow.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	MainWindow.BorderSizePixel = 0
+	MainWindow.Position = UDim2.new(0.5, 0, 0.5, 0)
+	MainWindow.Size = UDim2.new(0, 800, 0, 600)
+	MainWindow.Parent = CarnageGUI
 
-	local MainBoxCorner = Instance.new("UICorner")
-	MainBoxCorner.CornerRadius = UDim.new(0, 10)
-	MainBoxCorner.Parent = MainBox
+	local MainWindowCorner = Instance.new("UICorner")
+	MainWindowCorner.CornerRadius = UDim.new(0, 10)
+	MainWindowCorner.Parent = MainWindow
 
 	local TopBar = Instance.new("Frame")
 	TopBar.Name = "TopBar"
@@ -35,7 +35,7 @@ function CarnageLibrary:MainBox()
 	TopBar.BorderSizePixel = 0
 	TopBar.Position = UDim2.new(0.5, 0, 0, 0)
 	TopBar.Size = UDim2.new(1, 0, 0, 25)
-	TopBar.Parent = MainBox
+	TopBar.Parent = MainWindow
 
 	local TopBarCorner = Instance.new("UICorner")
 	TopBarCorner.CornerRadius = UDim.new(0, 5)
@@ -76,7 +76,7 @@ function CarnageLibrary:MainBox()
 	NavigationBar.BorderSizePixel = 0
 	NavigationBar.Position = UDim2.new(0.5, 0, 0, 30)
 	NavigationBar.Size = UDim2.new(1, -5, 0, 30)
-	NavigationBar.Parent = MainBox
+	NavigationBar.Parent = MainWindow
 
 	local NavigationBarListLayout = Instance.new("UIListLayout")
 	NavigationBarListLayout.FillDirection = Enum.FillDirection.Horizontal
@@ -88,20 +88,20 @@ function CarnageLibrary:MainBox()
 	local GuiActive = Instance.new("BoolValue")
 	GuiActive.Name = "Active"
 	GuiActive.Value = true
-	GuiActive.Parent = MainBox
+	GuiActive.Parent = MainWindow
 
 	GuiActive.Changed:Connect(function(Value)
 		if Value then
-			MainBox.Visible = true
+			MainWindow.Visible = true
 		else
-			MainBox.Visible = false
+			MainWindow.Visible = false
 		end
 	end)
 
 	local CurrentPagePointer = Instance.new("ObjectValue")
 	CurrentPagePointer.Name = "CurrentPage"
 	CurrentPagePointer.Value = nil
-	CurrentPagePointer.Parent = MainBox
+	CurrentPagePointer.Parent = MainWindow
 
 	local CurrentPage = CurrentPagePointer.Value
 
@@ -123,15 +123,15 @@ function CarnageLibrary:MainBox()
 
 	TopBar.InputBegan:Connect(function(Input)
 		if Input.UserInputType == Enum.UserInputType.MouseButton1 then
-			local RelativeXPosition = (Input.Position.X - MainBox.AbsolutePosition.X) / MainBox.Size.X.Offset
-			local RelativeYPosition = (Input.Position.Y - MainBox.AbsolutePosition.Y) / MainBox.Size.Y.Offset
+			local RelativeXPosition = (Input.Position.X - MainWindow.AbsolutePosition.X) / MainWindow.Size.X.Offset
+			local RelativeYPosition = (Input.Position.Y - MainWindow.AbsolutePosition.Y) / MainWindow.Size.Y.Offset
 
-			MainBox.AnchorPoint = Vector2.new(RelativeXPosition,RelativeYPosition)
+			MainWindow.AnchorPoint = Vector2.new(RelativeXPosition,RelativeYPosition)
 
 			RunService:BindToRenderStep("MoveGuiToMouse",10,function()
 				local MouseLocation = UserInputService:GetMouseLocation()
 
-				MainBox.Position = UDim2.fromOffset(MouseLocation.X,MouseLocation.Y)
+				MainWindow.Position = UDim2.fromOffset(MouseLocation.X,MouseLocation.Y)
 			end)
 		end
 	end)
@@ -142,7 +142,7 @@ function CarnageLibrary:MainBox()
 		end
 	end)
 
-	return MainBox, GuiActive, NavigationBar, CurrentPagePointer
+	return MainWindow, GuiActive, NavigationBar, CurrentPagePointer
 end
 
 function CarnageLibrary:ChatLogs()
@@ -315,8 +315,8 @@ function CarnageLibrary:NewPage(PageText)
 	PageButtonPointer.Value = PageButton
 	PageButtonPointer.Parent = PageFrame
 
-	local MainBox = CarnageGUI:FindFirstChild("MainBox")
-	local CurrentPage = MainBox:FindFirstChild("CurrentPage")
+	local MainWindow = CarnageGUI:FindFirstChild("MainWindow")
+	local CurrentPage = MainWindow:FindFirstChild("CurrentPage")
 
 	PageButton.MouseButton1Click:Connect(function()
 		CurrentPage.Value = PageFrame
@@ -325,7 +325,7 @@ function CarnageLibrary:NewPage(PageText)
 	return PageFrame, PageButton
 end
 
-function CarnageLibrary:NewSection()
+function CarnageLibrary:NewSection(Size)
 	local Section = Instance.new("ScrollingFrame")
 	Section.Name = "Section"
 	Section.Active = true
@@ -334,10 +334,23 @@ function CarnageLibrary:NewSection()
 	Section.BackgroundTransparency = 1.000
 	Section.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	Section.BorderSizePixel = 0
-	Section.Size = UDim2.new(0, 250, 1, 0)
 	Section.CanvasSize = UDim2.new(0, 0, 0, 0)
 	Section.ScrollBarThickness = 0
 	Section.ScrollingDirection = Enum.ScrollingDirection.Y
+
+	if Size then
+		if Size == "Full" then
+			Section.Size = UDim2.new(1, 0, 1, 0)
+		elseif Size == "Half" then
+			Section.Size = UDim2.new(0.5, 0, 1, 0)
+		elseif Size == "Third" then
+			Section.Size = UDim2.new(0, 250, 1, 0)
+		elseif Size == "TwoThird" then
+			Section.Size = UDim2.new(0, 510, 1, 0)
+		end
+	else
+		Section.Size = UDim2.new(0, 250, 1, 0)
+	end
 
 	local SectionListLayout = Instance.new("UIListLayout")
 	SectionListLayout.SortOrder = Enum.SortOrder.LayoutOrder
@@ -356,7 +369,7 @@ function CarnageLibrary:NewFeature(FeatureText)
 	FeatureFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	FeatureFrame.ClipsDescendants = true
 	FeatureFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
-	FeatureFrame.Size = UDim2.new(0, 250, 0, 25)
+	FeatureFrame.Size = UDim2.new(1, 0, 0, 25)
 
 	local FeaturePadding = Instance.new("UIPadding")
 	FeaturePadding.PaddingBottom = UDim.new(0, 10)
@@ -584,7 +597,7 @@ function CarnageLibrary:NewSlider(SliderFrameText, SliderInitialValue, SliderMax
 
 	local SliderTextBoxCorner = Instance.new("UICorner")
 	SliderTextBoxCorner.CornerRadius = UDim.new(0, 5)
-	SliderTextBoxCorner.Parent = SliderTextBox	
+	SliderTextBoxCorner.Parent = SliderTextBox
 
 	local SliderNumber = Instance.new("NumberValue")
 	SliderNumber.Name = "SliderNumber"
@@ -749,6 +762,138 @@ function CarnageLibrary:NewKeybindSetter(KeybindText, FeatureToBind)
 	end)
 
 	return KeybindSetter
+end
+
+function CarnageLibrary:Notifications()
+	local Notifications = Instance.new("Frame")
+	Notifications.Name = "Notifications"
+	Notifications.AnchorPoint = Vector2.new(1, 1)
+	Notifications.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	Notifications.BackgroundTransparency = 1.000
+	Notifications.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	Notifications.BorderSizePixel = 0
+	Notifications.Position = UDim2.new(1, -15, 1, -15)
+	Notifications.Size = UDim2.new(0.25, 0, 0.75, 0)
+	Notifications.Parent = CarnageGUI
+
+	local NotificationListLayout = Instance.new("UIListLayout")
+	NotificationListLayout.HorizontalAlignment = Enum.HorizontalAlignment.Right
+	NotificationListLayout.SortOrder = Enum.SortOrder.LayoutOrder
+	NotificationListLayout.VerticalAlignment = Enum.VerticalAlignment.Bottom
+	NotificationListLayout.Padding = UDim.new(0, 5)
+	NotificationListLayout.Parent = Notifications
+
+	local NotificationDebounce = false
+
+	local function AddNotification(Text, Time)
+		if NotificationDebounce then
+			repeat
+				task.wait()
+			until not NotificationDebounce
+		end
+
+		NotificationDebounce = true
+
+		local NotificationText = Instance.new("TextLabel")
+		NotificationText.Name = Text
+		NotificationText.AutomaticSize = Enum.AutomaticSize.X
+		NotificationText.AnchorPoint = Vector2.new(1, 1)
+		NotificationText.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+		NotificationText.BorderColor3 = Color3.fromRGB(0, 0, 0)
+		NotificationText.BorderSizePixel = 0
+		NotificationText.Position = UDim2.new(2.5, -15, 1, -15)
+		NotificationText.Size = UDim2.new(0, 0, 0, 50)
+		NotificationText.Font = Enum.Font.Arial
+		NotificationText.Text = Text or "Placeholder"
+		NotificationText.TextColor3 = Color3.fromRGB(255, 255, 255)
+		NotificationText.TextSize = 15.000
+		NotificationText.TextStrokeTransparency = 0.500
+		NotificationText.Parent = CarnageGUI
+
+		local Ghost = Instance.new("Frame")
+		Ghost.Name = "Ghost" .. NotificationText.Text
+		Ghost.Size = NotificationText.Size
+		Ghost.BackgroundTransparency = 1
+		Ghost.BorderSizePixel = 0
+		Ghost.Parent = Notifications
+
+		local NotificationUIPadding = Instance.new("UIPadding")
+		NotificationUIPadding.PaddingLeft = UDim.new(0, 10)
+		NotificationUIPadding.PaddingRight = UDim.new(0, 10)
+		NotificationUIPadding.Parent = NotificationText
+
+		NotificationText:TweenPosition(
+			UDim2.new(1, -15, 1, -15),
+			Enum.EasingDirection.Out,
+			Enum.EasingStyle.Quint,
+			0.25,
+			false,
+			function()
+				Ghost:Destroy()
+				NotificationText.Parent = Notifications
+				NotificationDebounce = false
+			end
+		)
+
+		if Time then
+			coroutine.wrap(function()
+				task.wait(Time)
+
+				if NotificationText then
+					local Dummy = NotificationText:Clone()
+					Dummy.AnchorPoint = Vector2.new(0,0)
+					Dummy.Position = UDim2.fromOffset(NotificationText.AbsolutePosition.X, NotificationText.AbsolutePosition.Y + 36)
+					Dummy.Parent = CarnageGUI
+
+					NotificationText.BackgroundTransparency = 1
+					NotificationText.TextTransparency = 1
+
+					Dummy:TweenPosition(
+						UDim2.fromOffset(Dummy.AbsolutePosition.X * 2, Dummy.AbsolutePosition.Y),
+						Enum.EasingDirection.In,
+						Enum.EasingStyle.Quint,
+						0.25,
+						false,
+						function()
+							NotificationText:Destroy()
+							Dummy:Destroy()
+						end
+					)
+				end
+			end)()
+		end
+
+		NotificationText.InputBegan:Connect(function(Input)
+			if Input.UserInputType == Enum.UserInputType.MouseButton1 then
+				local Dummy = NotificationText:Clone()
+				Dummy.AnchorPoint = Vector2.new(0,0)
+				Dummy.Position = UDim2.fromOffset(NotificationText.AbsolutePosition.X, NotificationText.AbsolutePosition.Y + 36)
+				Dummy.Parent = CarnageGUI
+
+				NotificationText.BackgroundTransparency = 1
+				NotificationText.TextTransparency = 1
+
+				Dummy:TweenPosition(
+					UDim2.fromOffset(Dummy.AbsolutePosition.X * 2, Dummy.AbsolutePosition.Y),
+					Enum.EasingDirection.In,
+					Enum.EasingStyle.Quint,
+					0.25,
+					false,
+					function()
+						Ghost:Destroy()
+						NotificationText:Destroy()
+						Dummy:Destroy()
+					end
+				)
+			end
+		end)
+	end
+
+	return AddNotification
+end
+
+function CarnageLibrary:RemoveGUI()
+	CarnageGUI:Destroy()
 end
 
 return CarnageLibrary
