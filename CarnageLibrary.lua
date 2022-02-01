@@ -5,11 +5,51 @@ local HttpService = game:GetService("HttpService")
 local UserInputService = game:GetService("UserInputService")
 local RunService = game:GetService("RunService")
 
+local HookFunction = hookfunction
+local HookMetaMethod = hookmetamethod
+local GetNameCallMethod = getnamecallmethod
+local CheckCaller = checkcaller
+
+local Functions = {
+	"FindFirstChild",
+	"FindFirstChildOfClass",
+	"FindFirstChildWhichIsA",
+	"FindFirstDescendant"
+}
+
+local ProtectedInstances = {}
+
+for Index = 1, #Functions do
+	local Function = Functions[Index]
+
+	local OldNameCall
+	OldNameCall = HookMetaMethod(game, "__namecall", function(Self, ...)
+		local Args = {...}
+
+		local NameCallMethod = GetNameCallMethod()
+
+		if not CheckCaller() then
+			if string.lower(NameCallMethod) == string.lower(Function) then
+				if table.find(ProtectedInstances, OldNameCall(Self, unpack(Args))) then
+					local ProtectedInstance = ProtectedInstances[table.find(ProtectedInstances, OldNameCall(Self, unpack(Args)))]
+
+					if ProtectedInstance == OldNameCall(Self, unpack(Args)) then
+						return nil
+					end
+				end
+
+			end
+		end
+
+		return OldNameCall(Self, unpack(Args))
+	end)
+end
+
 local CarnageGUI = Instance.new("ScreenGui")
 CarnageGUI.IgnoreGuiInset = true
 CarnageGUI.Name = HttpService:GenerateGUID()
 CarnageGUI.ResetOnSpawn = false
-syn.protect_gui(CarnageGUI)
+table.insert(ProtectedInstances, CarnageGUI)
 CarnageGUI.Parent = CoreGui
 
 function CarnageLibrary:MainWindow()
