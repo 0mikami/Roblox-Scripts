@@ -30,6 +30,7 @@ for Index = 1, #Functions do
 
 		if not CheckCaller() then
 			if string.lower(NameCallMethod) == string.lower(Function) then
+							print(NameCallMethod)
 				if table.find(ProtectedInstances, OldNameCall(Self, unpack(Args))) then
 					local ProtectedInstance = ProtectedInstances[table.find(ProtectedInstances, OldNameCall(Self, unpack(Args)))]
 
