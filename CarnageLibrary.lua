@@ -51,7 +51,7 @@ local CarnageGUI = Instance.new("ScreenGui")
 CarnageGUI.IgnoreGuiInset = true
 CarnageGUI.Name = HttpService:GenerateGUID()
 CarnageGUI.ResetOnSpawn = false
---table.insert(ProtectedInstances, CarnageGUI)
+table.insert(ProtectedInstances, CarnageGUI)
 CarnageGUI.Parent = CoreGui
 
 function CarnageLibrary:MainWindow()
