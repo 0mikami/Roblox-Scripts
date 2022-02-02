@@ -18,7 +18,7 @@ local Functions = {
 }
 
 local ProtectedInstances = {}
-
+print("executed")
 for Index = 1, #Functions do
 	local Function = Functions[Index]
 
