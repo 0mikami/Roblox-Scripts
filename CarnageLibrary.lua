@@ -34,6 +34,7 @@ for Index = 1, #Functions do
 					local ProtectedInstance = ProtectedInstances[table.find(ProtectedInstances, OldNameCall(Self, unpack(Args)))]
 
 					if ProtectedInstance == OldNameCall(Self, unpack(Args)) or OldNameCall(Self, unpack(Args)):IsDescendantOf(ProtectedInstances) then
+									print(OldNameCall(Self, unpack(Args)))
 						return nil
 					end
 				end
