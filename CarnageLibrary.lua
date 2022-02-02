@@ -30,12 +30,12 @@ for Index = 1, #Functions do
 
 		if not CheckCaller() then
 			if string.lower(NameCallMethod) == string.lower(Function) then
-							print(NameCallMethod)
+							print(NameCallMethod, getcallingscript())
 				if table.find(ProtectedInstances, OldNameCall(Self, unpack(Args))) then
 					local ProtectedInstance = ProtectedInstances[table.find(ProtectedInstances, OldNameCall(Self, unpack(Args)))]
 
 					if ProtectedInstance == OldNameCall(Self, unpack(Args)) or OldNameCall(Self, unpack(Args)):IsDescendantOf(ProtectedInstances) then
-									print("hooked", OldNameCall(Self, unpack(Args)))
+									print("hooked", OldNameCall(Self, unpack(Args)), getcallingscript())
 						return nil
 					end
 				end
