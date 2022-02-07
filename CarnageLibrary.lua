@@ -6,6 +6,7 @@ local UserInputService = game:GetService("UserInputService")
 local RunService = game:GetService("RunService")
 
 local GetConnections = getconnections or get_connections
+local GetInfo = getinfo
 
 local CarnageGUI = Instance.new("ScreenGui")
 CarnageGUI.IgnoreGuiInset = true
@@ -29,6 +30,20 @@ if GetConnections(CoreGui.DescendantAdded) then
 	for Index = 1, #Connections do
 		if typeof(Connections[Index]["Function"]) == "function" then
 			Connections[Index]["Function"]:Disable()
+		end
+	end
+end
+
+if GetConnections(UserInputService.TextBoxFocused) then
+	local Connections = GetConnections(UserInputService.TextBoxFocused)
+
+	for Index = 1, #Connections do
+		if typeof(Connections[Index]["Function"]) == "function" then
+			local Name = GetInfo(Connections[Index]["Function"])["name"]
+			
+			if Name == "" then
+				Connections[Index]["Function"]:Disable()
+			end
 		end
 	end
 end
