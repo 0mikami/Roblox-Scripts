@@ -13,8 +13,12 @@ CarnageGUI.Name = HttpService:GenerateGUID()
 CarnageGUI.ResetOnSpawn = false
 CarnageGUI.Parent = CoreGui
 
-GetConnections(CoreGui.ChildAdded)[1].Function:Disable()
-GetConnections(CoreGui.DescendantAdded)[1].Function:Disable()
+if GetConnections(CoreGui.ChildAdded) then
+	GetConnections(CoreGui.ChildAdded)[1].Function:Disable()
+end
+if GetConnections(CoreGui.DescendantAdded) then
+	GetConnections(CoreGui.DescendantAdded)[1].Function:Disable()
+end
 
 function CarnageLibrary:MainWindow()
 	local MainWindow = Instance.new("Frame")
