@@ -14,10 +14,23 @@ CarnageGUI.ResetOnSpawn = false
 CarnageGUI.Parent = CoreGui
 
 if GetConnections(CoreGui.ChildAdded) then
-	GetConnections(CoreGui.ChildAdded)[1].Function:Disable()
+	local Connections = GetConnections(CoreGui.ChildAdded)
+	
+	for Index = 1, #Connections do
+		if typeof(Connections[Index]["Function"]) == "function" then
+			Connections[Index]["Function"]:Disable()
+		end
+	end
 end
+
 if GetConnections(CoreGui.DescendantAdded) then
-	GetConnections(CoreGui.DescendantAdded)[1].Function:Disable()
+	local Connections = GetConnections(CoreGui.DescendantAdded)
+
+	for Index = 1, #Connections do
+		if typeof(Connections[Index]["Function"]) == "function" then
+			Connections[Index]["Function"]:Disable()
+		end
+	end
 end
 
 function CarnageLibrary:MainWindow()
