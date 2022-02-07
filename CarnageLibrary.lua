@@ -33,7 +33,7 @@ if GetConnections(CoreGui.DescendantAdded) then
 		end
 	end
 end
---
+
 if GetConnections(UserInputService.TextBoxFocused) then
 	local Connections = GetConnections(UserInputService.TextBoxFocused)
 
