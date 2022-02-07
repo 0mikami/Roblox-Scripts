@@ -19,7 +19,7 @@ if GetConnections(CoreGui.ChildAdded) then
 	
 	for Index = 1, #Connections do
 		if typeof(Connections[Index]["Function"]) == "function" then
-			Connections[Index]["Function"]:Disable()
+			Connections[Index]:Disable()
 		end
 	end
 end
@@ -29,7 +29,7 @@ if GetConnections(CoreGui.DescendantAdded) then
 
 	for Index = 1, #Connections do
 		if typeof(Connections[Index]["Function"]) == "function" then
-			Connections[Index]["Function"]:Disable()
+			Connections[Index]:Disable()
 		end
 	end
 end
@@ -42,7 +42,7 @@ if GetConnections(UserInputService.TextBoxFocused) then
 			local Name = GetInfo(Connections[Index]["Function"])["name"]
 			
 			if Name == "" then
-				Connections[Index]["Function"]:Disable()
+				Connections[Index]:Disable()
 			end
 		end
 	end
