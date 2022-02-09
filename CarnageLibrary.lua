@@ -14,26 +14,6 @@ CarnageGUI.Name = HttpService:GenerateGUID()
 CarnageGUI.ResetOnSpawn = false
 CarnageGUI.Parent = CoreGui
 
-if GetConnections(CoreGui.ChildAdded) then
-	local Connections = GetConnections(CoreGui.ChildAdded)
-	
-	for Index = 1, #Connections do
-		if typeof(Connections[Index]["Function"]) == "function" then
-			Connections[Index]:Disable()
-		end
-	end
-end
-
-if GetConnections(CoreGui.DescendantAdded) then
-	local Connections = GetConnections(CoreGui.DescendantAdded)
-
-	for Index = 1, #Connections do
-		if typeof(Connections[Index]["Function"]) == "function" then
-			Connections[Index]:Disable()
-		end
-	end
-end
-
 if GetConnections(UserInputService.TextBoxFocused) then
 	local Connections = GetConnections(UserInputService.TextBoxFocused)
 
@@ -193,13 +173,6 @@ function CarnageLibrary:ChatLogs()
 	ChatLogs.ZIndex = 2
 	ChatLogs.Parent = CarnageGUI
 
-	local ChatLogsPadding = Instance.new("UIPadding")
-	ChatLogsPadding.PaddingBottom = UDim.new(0, 5)
-	ChatLogsPadding.PaddingLeft = UDim.new(0, 5)
-	ChatLogsPadding.PaddingRight = UDim.new(0, 5)
-	ChatLogsPadding.PaddingTop = UDim.new(0, 5)
-	ChatLogsPadding.Parent = ChatLogs
-
 	local ChatScrollFrame = Instance.new("ScrollingFrame")
 	ChatScrollFrame.Active = true
 	ChatScrollFrame.AutomaticCanvasSize = Enum.AutomaticSize.Y
@@ -209,7 +182,7 @@ function CarnageLibrary:ChatLogs()
 	ChatScrollFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	ChatScrollFrame.BorderSizePixel = 0
 	ChatScrollFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
-	ChatScrollFrame.Size = UDim2.new(1, 0, 1, 0)
+	ChatScrollFrame.Size = UDim2.new(1, -5, 1, -5)
 	ChatScrollFrame.CanvasSize = UDim2.new(0, 0, 1, 0)
 	ChatScrollFrame.ScrollBarImageColor3 = Color3.fromRGB(200, 40, 40)
 	ChatScrollFrame.ScrollBarThickness = 2
@@ -222,10 +195,10 @@ function CarnageLibrary:ChatLogs()
 	ScrollingFrameListLayout.Parent = ChatScrollFrame
 
 	local ScrollingFramePadding = Instance.new("UIPadding")
-	ScrollingFramePadding.PaddingBottom = UDim.new(0, 5)
+	ScrollingFramePadding.PaddingBottom = UDim.new(0, 0)
 	ScrollingFramePadding.PaddingLeft = UDim.new(0, 5)
 	ScrollingFramePadding.PaddingRight = UDim.new(0, 5)
-	ScrollingFramePadding.PaddingTop = UDim.new(0, 5)
+	ScrollingFramePadding.PaddingTop = UDim.new(0, 0)
 	ScrollingFramePadding.Parent = ChatScrollFrame
 
 	local MaxCanvasPosition = ChatScrollFrame.AbsoluteCanvasSize.Y - ChatScrollFrame.AbsoluteWindowSize.Y
@@ -244,12 +217,12 @@ function CarnageLibrary:ChatLogs()
 			local RelativeXPosition = (Input.Position.X - ChatLogs.AbsolutePosition.X) / ChatLogs.Size.X.Offset
 			local RelativeYPosition = (Input.Position.Y - ChatLogs.AbsolutePosition.Y) / ChatLogs.Size.Y.Offset
 
-			ChatLogs.AnchorPoint = Vector2.new(RelativeXPosition,RelativeYPosition)
+			ChatLogs.AnchorPoint = Vector2.new(RelativeXPosition, RelativeYPosition)
 
 			RunService:BindToRenderStep("MoveGuiToMouse",10,function()
 				local MouseLocation = UserInputService:GetMouseLocation()
 
-				ChatLogs.Position = UDim2.fromOffset(MouseLocation.X,MouseLocation.Y)
+				ChatLogs.Position = UDim2.fromOffset(MouseLocation.X, MouseLocation.Y)
 			end)
 		end
 	end)
@@ -262,7 +235,7 @@ function CarnageLibrary:ChatLogs()
 
 	local ChatTable = {}
 
-	local function AddChatText(GameName, UserName, Chat)
+	local function AddChatText(CharacterName, UserName, Chat)
 		local ChatTextLabel = Instance.new("TextLabel")
 		ChatTextLabel.AnchorPoint = Vector2.new(0.5, 0)
 		ChatTextLabel.AutomaticSize = Enum.AutomaticSize.Y
@@ -272,7 +245,7 @@ function CarnageLibrary:ChatLogs()
 		ChatTextLabel.BorderSizePixel = 0
 		ChatTextLabel.Size = UDim2.new(1, 0, 0, 16)
 		ChatTextLabel.Font = Enum.Font.Gotham
-		ChatTextLabel.Text = "["..GameName.."]".." : "..Chat
+		ChatTextLabel.Text = "[".. CharacterName or "?" .."]".." : "..Chat
 		ChatTextLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
 		ChatTextLabel.TextSize = 15.000
 		ChatTextLabel.TextStrokeTransparency = 1
@@ -286,7 +259,7 @@ function CarnageLibrary:ChatLogs()
 		end)
 
 		ChatTextLabel.MouseLeave:Connect(function()
-			ChatTextLabel.Text = "["..GameName.."]".." : "..Chat
+			ChatTextLabel.Text = "["..CharacterName.."]".." : "..Chat
 		end)
 
 		table.insert(ChatTable, ChatTextLabel)
