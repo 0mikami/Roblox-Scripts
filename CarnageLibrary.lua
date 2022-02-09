@@ -182,8 +182,8 @@ function CarnageLibrary:ChatLogs()
 	ChatScrollFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	ChatScrollFrame.BorderSizePixel = 0
 	ChatScrollFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
-	ChatScrollFrame.Size = UDim2.new(1, -5, 1, -5)
-	ChatScrollFrame.CanvasSize = UDim2.new(0, 0, 1, 0)
+	ChatScrollFrame.Size = UDim2.new(1, -10, 1, -10)
+	ChatScrollFrame.CanvasSize = UDim2.new(0, 0, 1, -10)
 	ChatScrollFrame.ScrollBarImageColor3 = Color3.fromRGB(200, 40, 40)
 	ChatScrollFrame.ScrollBarThickness = 2
 	ChatScrollFrame.ZIndex = 2
@@ -240,7 +240,7 @@ function CarnageLibrary:ChatLogs()
 		if not CharacterName then
 			CharacterName = "?"
 		end
-		
+
 		local ChatTextLabel = Instance.new("TextLabel")
 		ChatTextLabel.AnchorPoint = Vector2.new(0.5, 0)
 		ChatTextLabel.AutomaticSize = Enum.AutomaticSize.Y
