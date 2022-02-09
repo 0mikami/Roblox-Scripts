@@ -415,44 +415,44 @@ function CarnageLibrary:NewFeature(FeatureText)
 	return FeatureFrame
 end
 
-function CarnageLibrary:NewClickButton(ButtonText)
-	local ClickButton = Instance.new("TextButton")
-	ClickButton.Name = ButtonText or "ClickButton"
-	ClickButton.Active = false
-	ClickButton.AnchorPoint = Vector2.new(0.5, 0)
-	ClickButton.BackgroundColor3 = Color3.fromRGB(200, 0, 0)
-	ClickButton.BorderColor3 = Color3.fromRGB(0, 0, 0)
-	ClickButton.BorderSizePixel = 0
-	ClickButton.Size = UDim2.new(1, 0, 0, 16)
-	ClickButton.AutoButtonColor = false
-	ClickButton.Font = Enum.Font.Arial
-	ClickButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-	ClickButton.TextScaled = true
-	ClickButton.TextSize = 15.000
-	ClickButton.TextStrokeTransparency = 0.000
-	ClickButton.TextWrapped = true
+function CarnageLibrary:NewButton(ButtonText)
+	local Button = Instance.new("TextButton")
+	Button.Name = ButtonText or "Button"
+	Button.Active = false
+	Button.AnchorPoint = Vector2.new(0.5, 0)
+	Button.BackgroundColor3 = Color3.fromRGB(200, 0, 0)
+	Button.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	Button.BorderSizePixel = 0
+	Button.Size = UDim2.new(1, 0, 0, 16)
+	Button.AutoButtonColor = false
+	Button.Font = Enum.Font.Arial
+	Button.TextColor3 = Color3.fromRGB(255, 255, 255)
+	Button.TextScaled = true
+	Button.TextSize = 15.000
+	Button.TextStrokeTransparency = 0.000
+	Button.TextWrapped = true
 
-	local ClickButtonCorner = Instance.new("UICorner")
-	ClickButtonCorner.CornerRadius = UDim.new(0.25, 0)
-	ClickButtonCorner.Parent = ClickButton
+	local ButtonCorner = Instance.new("UICorner")
+	ButtonCorner.CornerRadius = UDim.new(0.25, 0)
+	ButtonCorner.Parent = Button
 
-	local ClickButtonPadding = Instance.new("UIPadding")
-	ClickButtonPadding.PaddingTop = UDim.new(0, 1)
-	ClickButtonPadding.Parent = ClickButton
+	local ButtonPadding = Instance.new("UIPadding")
+	ButtonPadding.PaddingTop = UDim.new(0, 1)
+	ButtonPadding.Parent = Button
 
-	ClickButton.InputBegan:Connect(function(Input)
+	Button.InputBegan:Connect(function(Input)
 		if Input.UserInputType == Enum.UserInputType.MouseButton1 then
-			ClickButton.BackgroundColor3 = Color3.fromRGB(150, 0, 0)
+			Button.BackgroundColor3 = Color3.fromRGB(150, 0, 0)
 		end
 	end)
 
-	ClickButton.InputEnded:Connect(function(Input)
+	Button.InputEnded:Connect(function(Input)
 		if Input.UserInputType == Enum.UserInputType.MouseButton1 then
-			ClickButton.BackgroundColor3 = Color3.fromRGB(200, 0, 0)
+			Button.BackgroundColor3 = Color3.fromRGB(200, 0, 0)
 		end
 	end)
 
-	return ClickButton
+	return Button
 end
 
 function CarnageLibrary:NewRadioButton(RadioButtonText)
