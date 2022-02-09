@@ -202,6 +202,7 @@ function CarnageLibrary:ChatLogs()
 	ScrollingFramePadding.Parent = ChatScrollFrame
 
 	local MaxCanvasPosition = ChatScrollFrame.AbsoluteCanvasSize.Y - ChatScrollFrame.AbsoluteWindowSize.Y
+	ChatScrollFrame.CanvasPosition = Vector2.new(0, MaxCanvasPosition)
 
 	ChatScrollFrame.Changed:Connect(function(Property)
 		if Property == "AbsoluteCanvasSize" then
