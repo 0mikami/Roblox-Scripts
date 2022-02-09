@@ -426,6 +426,7 @@ function CarnageLibrary:NewButton(ButtonText)
 	Button.Size = UDim2.new(1, 0, 0, 16)
 	Button.AutoButtonColor = false
 	Button.Font = Enum.Font.Arial
+	Button.Text = ButtonText or "Button"
 	Button.TextColor3 = Color3.fromRGB(255, 255, 255)
 	Button.TextScaled = true
 	Button.TextSize = 15.000
