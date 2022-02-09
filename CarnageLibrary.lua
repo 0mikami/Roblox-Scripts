@@ -236,6 +236,10 @@ function CarnageLibrary:ChatLogs()
 	local ChatTable = {}
 
 	local function AddChatText(CharacterName, UserName, Chat)
+		if not CharacterName then
+			CharacterName = "?"
+		end
+		
 		local ChatTextLabel = Instance.new("TextLabel")
 		ChatTextLabel.AnchorPoint = Vector2.new(0.5, 0)
 		ChatTextLabel.AutomaticSize = Enum.AutomaticSize.Y
@@ -245,7 +249,7 @@ function CarnageLibrary:ChatLogs()
 		ChatTextLabel.BorderSizePixel = 0
 		ChatTextLabel.Size = UDim2.new(1, 0, 0, 16)
 		ChatTextLabel.Font = Enum.Font.Gotham
-		ChatTextLabel.Text = "[".. CharacterName or "?" .."]".." : "..Chat
+		ChatTextLabel.Text = "["..CharacterName.."]".." : "..Chat
 		ChatTextLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
 		ChatTextLabel.TextSize = 15.000
 		ChatTextLabel.TextStrokeTransparency = 1
