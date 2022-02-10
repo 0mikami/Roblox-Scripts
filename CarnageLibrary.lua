@@ -951,4 +951,6 @@ function CarnageLibrary:RemoveGUI()
 	CarnageGUI:Destroy()
 end
 
+print("Successfully loaded Carnage Library")
+
 return CarnageLibrary
