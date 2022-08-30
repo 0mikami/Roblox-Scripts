@@ -6,13 +6,17 @@ local player = Players.LocalPlayer or Players.PlayerAdded:Wait()
 local character = player.Character or player.CharacterAdded:Wait()
 local rootPart = character:WaitForChild("HumanoidRootPart")
 
-local sellEvent = ReplicatedStorage:WaitForChild("Knit")
-	:WaitForChild("Services")
-	:WaitForChild("TycoonService")
-	:WaitForChild("RE")
-	:WaitForChild("SellRats")
+local serviceFolder = ReplicatedStorage:WaitForChild("Knit"):WaitForChild("Services"):WaitForChild("TycoonService")
 
-local tycoonFolder = workspace:WaitForChild("Tycoons")
+local sellEvent = serviceFolder:WaitForChild("RE"):WaitForChild("SellRats")
+local purchaseEvent = serviceFolder:WaitForChild("RE"):WaitForChild("PurchaseButton")
+local collectEvent = serviceFolder:WaitForChild("RE"):WaitForChild("CollectRat")
+local getTycoon = serviceFolder:WaitForChild("RF"):WaitForChild("getTycoon")
+
+local tycoon = getTycoon:InvokeServer()
+local ratFolder = tycoon:WaitForChild("Rats")
+local buttonFolder = tycoon:WaitForChild("Buttons")
+local obbyButton = workspace:WaitForChild("Obby"):WaitForChild("Button"):WaitForChild("Hitbox")
 
 local isOn = true
 
@@ -27,24 +31,36 @@ UserInputService.InputBegan:Connect(function(input, gameProcessedEvent)
 	end
 end)
 
-for _, tycoon in ipairs(tycoonFolder:GetChildren()) do
-	local ratFolder = tycoon:FindFirstChild("Rats")
+local buttonTable = {}
 
-	if ratFolder then
-		coroutine.wrap(function()
-			while true do
-				if isOn then
-					for _, rat in ipairs(ratFolder:GetChildren()) do
-						while rat:FindFirstAncestor("Rats") do
-							rootPart.CFrame = rat.PrimaryPart.CFrame
-							sellEvent:FireServer()
-							task.wait()
-						end
-					end
-				end
-
-				task.wait()
-			end
-		end)()
+for _, button in ipairs(buttonFolder:GetChildren()) do
+	if button:GetAttribute("Price") and not button:GetAttribute("Gamepass") then
+		buttonTable[button] = button:GetAttribute("Price")
 	end
+end
+
+buttonFolder.ChildAdded:Connect(function(child)
+	if child:GetAttribute("Price") and not child:GetAttribute("Gamepass") then
+		buttonTable[child] = child:GetAttribute("Price")
+	end
+end)
+
+while true do
+	if isOn then
+		if not player:GetAttribute("ObbyCooldown") then
+			rootPart.CFrame = obbyButton.CFrame
+		end
+		for _, rat in ipairs(ratFolder:GetChildren()) do
+			collectEvent:FireServer(tonumber(rat.Name))
+			sellEvent:FireServer()
+			task.wait(0.075)
+		end
+		for button, price in pairs(buttonTable) do
+			if button:GetAttribute("Enabled") and price <= player:GetAttribute("Cash") then
+				purchaseEvent:FireServer(button.Name)
+				task.wait(0.075)
+			end
+		end
+	end
+	task.wait()
 end
