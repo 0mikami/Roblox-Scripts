@@ -45,22 +45,42 @@ buttonFolder.ChildAdded:Connect(function(child)
 	end
 end)
 
+local function washRat(rat)
+	collectEvent:FireServer(tonumber(rat.Name))
+	sellEvent:FireServer()
+end
+
+local function touchObby()
+	if firetouchinterest then
+		firetouchinterest(rootPart, obbyButton, 0)
+		firetouchinterest(rootPart, obbyButton, 1)
+	else
+		rootPart.CFrame = obbyButton.CFrame
+	end
+end
+
+for _, rat in ipairs(ratFolder:GetChildren()) do
+	washRat(rat)
+end
+
+ratFolder.ChildAdded:Connect(function(child)
+	if isOn then
+		washRat(child)
+	end
+end)
+
 while true do
 	if isOn then
-		if not player:GetAttribute("ObbyCooldown") then
-			rootPart.CFrame = obbyButton.CFrame
-		end
-		for _, rat in ipairs(ratFolder:GetChildren()) do
-			collectEvent:FireServer(tonumber(rat.Name))
-			sellEvent:FireServer()
-			task.wait(0.075)
-		end
 		for button, price in pairs(buttonTable) do
 			if button:GetAttribute("Enabled") and price <= player:GetAttribute("Cash") then
 				purchaseEvent:FireServer(button.Name)
-				task.wait(0.075)
+				task.wait(0.5)
 			end
 		end
+		if not player:GetAttribute("ObbyCooldown") then
+			touchObby()
+		end
 	end
+
 	task.wait()
 end
