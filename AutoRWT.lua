@@ -69,6 +69,22 @@ ratFolder.ChildAdded:Connect(function(child)
 	end
 end)
 
+if getconnections then
+	for _, connection in pairs(getconnections(Players.LocalPlayer.Idled)) do
+		if connection.Disable then
+			connection.Disable(connection)
+		elseif connection.Disconnect then
+			connection.Disconnect(connection)
+		end
+	end
+else
+	Players.LocalPlayer.Idled:Connect(function()
+		local VirtualUser = game:GetService("VirtualUser")
+		VirtualUser:CaptureController()
+		VirtualUser:ClickButton2(Vector2.new())
+	end)
+end
+
 while true do
 	if isOn then
 		for button, price in pairs(buttonTable) do
